@@ -300,32 +300,33 @@ flowchart LR
     <div class="note" style="margin-top:0"><b>🧰 Tus herramientas</b> — un clic y se abre. Abajo, el <b>paso a paso</b> de un proyecto.</div>
     <div class="tools">
       <a class="tool" href="https://panel.bloomlichtatelier.com" target="_blank"><span class="ic">📊</span><b>Panel</b><small>ver todo</small></a>
-      <a class="tool" href="generador.html" target="_blank"><span class="ic">🔗</span><b>Generar link</b><small>por proyecto</small></a>
-      <a class="tool" href="https://validacion.bloomlichtatelier.com" target="_blank"><span class="ic">📝</span><b>Validación</b><small>brief cliente</small></a>
+      <a class="tool" href="https://validacion.bloomlichtatelier.com" target="_blank"><span class="ic">📋</span><b>Cuestionario</b><small>brief cliente</small></a>
+      <a class="tool" href="https://drive.google.com" target="_blank"><span class="ic">🗂️</span><b>Drive</b><small>briefs, logos, fotos</small></a>
+      <a class="tool" href="generador.html" target="_blank"><span class="ic">✅</span><b>Link cliente</b><small>confirmar brief</small></a>
+      <a class="tool" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank"><span class="ic">🤖</span><b>n8n</b><small>análisis</small></a>
       <a class="tool" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank"><span class="ic">💲</span><b>Cotizador</b><small>precios</small></a>
-      <a class="tool" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank"><span class="ic">🤖</span><b>n8n</b><small>automatización</small></a>
       <a class="tool" href="https://mail.zoho.com" target="_blank"><span class="ic">✉️</span><b>Correo</b><small>Zoho</small></a>
     </div>
 
-    <h3 style="font-size:13px;color:var(--charcoal);margin:16px 0 8px">🪜 Paso a paso de un proyecto</h3>
+    <h3 style="font-size:13px;color:var(--charcoal);margin:16px 0 8px">🪜 Paso a paso de un proyecto (orden real del sistema)</h3>
     <div class="flow">
-      <div class="fstep"><div class="num">1</div><span class="emj">🆕</span><div class="txt"><b>Nuevo proyecto</b><p>Ponle un código corto y úsalo en todo: <b>PROY-A</b>.</p></div></div>
+      <div class="fstep"><div class="num">1</div><span class="emj">📋</span><div class="txt"><b>Cuestionario</b><p>El cliente contesta el brief conversacional (código del proyecto: PROY-A).</p></div><a class="go" href="https://validacion.bloomlichtatelier.com" target="_blank">Abrir</a></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">2</div><span class="emj">🔗</span><div class="txt"><b>Genera el link del proyecto</b><p>Escribe el nombre → Generar → Copiar el link con token.</p></div><a class="go" href="generador.html" target="_blank">Abrir</a></div>
+      <div class="fstep"><div class="num">2</div><span class="emj">📄</span><div class="txt"><b>Se genera el brief + arquetipo</b><p>Se crea el brief y se <b>guarda en Drive</b> (junto con logos y fotos).</p></div><a class="go" href="https://drive.google.com" target="_blank">Abrir Drive</a></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">3</div><span class="emj">📤</span><div class="txt"><b>Mándaselo al cliente</b><p>Por correo (ventas@ o proyectos@), asunto con el código [PROY-A].</p></div><a class="go" href="https://mail.zoho.com" target="_blank">Abrir correo</a></div>
+      <div class="fstep"><div class="num">3</div><span class="emj">🔤</span><div class="txt"><b>Naming</b><p>Propuestas de nombre con criterio (arquetipo + framework).</p></div></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">4</div><span class="emj">📝</span><div class="txt"><b>El cliente llena su brief</b><p>Abre el link y contesta; así vemos qué necesita.</p></div><a class="go" href="https://validacion.bloomlichtatelier.com" target="_blank">Ver página</a></div>
+      <div class="fstep"><div class="num">4</div><span class="emj">🔎</span><div class="txt"><b>Revisión del brief</b><p>Revisamos y corregimos el brief internamente.</p></div></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">5</div><span class="emj">🤖</span><div class="txt"><b>El sistema lo analiza</b><p>n8n procesa el brief (intake + análisis) automáticamente.</p></div><a class="go" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Abrir n8n</a></div>
+      <div class="fstep"><div class="num">5</div><span class="emj">✅</span><div class="txt"><b>Confirmación del cliente (link manual)</b><p>Le enviamos el link para que <b>confirme las revisiones</b> del brief y suba logos/archivos.</p></div><a class="go" href="generador.html" target="_blank">Generar link</a></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">6</div><span class="emj">💲</span><div class="txt"><b>Cotiza</b><p>Arma el precio en el cotizador.</p></div><a class="go" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank">Abrir cotizador</a></div>
+      <div class="fstep"><div class="num">6</div><span class="emj">🤖</span><div class="txt"><b>Análisis profundo</b><p>ICP, competencia, mercado y precios (n8n).</p></div><a class="go" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Abrir n8n</a></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">7</div><span class="emj">✉️</span><div class="txt"><b>Envía la propuesta</b><p>Correo al cliente con la cotización (asunto [PROY-A]).</p></div><a class="go" href="https://mail.zoho.com" target="_blank">Abrir correo</a></div>
+      <div class="fstep"><div class="num">7</div><span class="emj">🎨</span><div class="txt"><b>Kit de logos / imagen</b><p>Vectoriza y arma el kit multiformato (proyecto Vectorizador).</p></div></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">8</div><span class="emj">🗒️</span><div class="txt"><b>Anota el avance</b><p>Una línea en la bitácora: "PROY-A: enviada propuesta".</p></div><a class="go" href="https://panel.bloomlichtatelier.com" target="_blank">Ver panel</a></div>
+      <div class="fstep"><div class="num">8</div><span class="emj">💲</span><div class="txt"><b>Cotización y propuesta</b><p>Cotizador → propuesta por correo → anota el avance en la bitácora.</p></div><a class="go" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank">Cotizador</a></div>
     </div>
-    <div class="note" style="margin-top:12px">Detalle "para dummies" en el <b>Manual de Operación Bloomlicht</b> (carpeta Bloomlicht).</div>
+    <div class="note" style="margin-top:12px">Naming (3) y Kit de logos (7) están <b>por construir</b>. Detalle "para dummies" en el <b>Manual de Operación Bloomlicht</b>.</div>
   </section>
 
   <section class="panel" id="bitacora">

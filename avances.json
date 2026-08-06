@@ -1,5 +1,5 @@
 {
-  "publicado": "2026-08-05 22:39",
+  "publicado": "2026-08-06 13:10",
   "items": [
     {
       "fecha": "2026-08-05",
@@ -15,6 +15,11 @@
       "fecha": "2026-08-05",
       "quien": "C",
       "texto": "Panel preparado en código para leer bitácora EN VIVO desde Google Sheet (variable SHEET_CSV_URL, vacía por ahora). Pendiente: David crea/publica la Sheet y da el enlace CSV; + usuario GitHub para auto-deploy. Ver `_publicar/COMO SE ACTUALIZA SOLO (plan).md`."
+    },
+    {
+      "fecha": "2026-08-05",
+      "quien": "C",
+      "texto": "**Auto-deploy del panel montado.** Repo GitHub `dvdmitico333-code/bloomlicht-panel` (David lo sembró con los 4 archivos) → conectado a Cloudflare Pages proyecto **bloomlicht-panel-git** → publica solo en cada commit. Dominio `panel.bloomlichtatelier.com` movido del proyecto viejo (direct-upload) al nuevo (Git). Para futuros cambios de diseño: editar en el repo → se publica solo (David ya no sube archivos). Pendiente aún: enlace pub de la Google Sheet para la bitácora en vivo."
     },
     {
       "fecha": "2026-08-04",
