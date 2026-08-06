@@ -1,6 +1,16 @@
 {
-  "publicado": "2026-08-06 13:10",
+  "publicado": "2026-08-06 13:45",
   "items": [
+    {
+      "fecha": "2026-08-06",
+      "quien": "C",
+      "texto": "Bitácora en vivo del panel conectada a la Google Sheet publicada (CSV). Orden del Flujo corregido según el sistema de intake. Panel corregido queda listo en `_Publicar_Panel` para publicar vía GitHub."
+    },
+    {
+      "fecha": "2026-08-06",
+      "quien": "D",
+      "texto": "Nuevo negocio en marcha: **Negocio Fiscal** (carpeta `Documentos\\Fiscal`). Comparte memoria y herramientas con Bloomlicht — ver [[Mapa de Negocios (David & Paola)]]."
+    },
     {
       "fecha": "2026-08-05",
       "quien": "C",
