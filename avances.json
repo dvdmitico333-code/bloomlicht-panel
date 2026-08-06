@@ -1,0 +1,55 @@
+{
+  "publicado": "2026-08-05 22:39",
+  "items": [
+    {
+      "fecha": "2026-08-05",
+      "quien": "C",
+      "texto": "**Zoho listo a nivel DNS:** dominio agregado y VERIFICADO. En Cloudflare quedaron: TXT verificación, MX (mx/mx2/mx3.zoho.com), SPF y DKIM. Zoho confirma MX apuntando a Zoho. Falta: crear los buzones (contacto/ventas/proyectos/cotizaciones) y alias. Archivado en `Credenciales/Zoho Mail - bloomlichtatelier (Credenciales).docx`."
+    },
+    {
+      "fecha": "2026-08-05",
+      "quien": "C",
+      "texto": "Panel: despliegue confirmado en Cloudflare Pages (Production). Los links en línea aún no cargan del lado de David tras 1 día; a revisar (posible caché/DNS local o certificado del subdominio). Mientras, el panel abre local desde `Bloomlicht\\Panel_Control_Bloomlicht.html`."
+    },
+    {
+      "fecha": "2026-08-05",
+      "quien": "C",
+      "texto": "Panel preparado en código para leer bitácora EN VIVO desde Google Sheet (variable SHEET_CSV_URL, vacía por ahora). Pendiente: David crea/publica la Sheet y da el enlace CSV; + usuario GitHub para auto-deploy. Ver `_publicar/COMO SE ACTUALIZA SOLO (plan).md`."
+    },
+    {
+      "fecha": "2026-08-04",
+      "quien": "C",
+      "texto": "Creado el **Vault Compartido de Bloomlicht** (memoria en línea para David + Paola con grafo en Obsidian). Copiadas las notas de Bloomlicht, índice y esta bitácora."
+    },
+    {
+      "fecha": "2026-08-04",
+      "quien": "C",
+      "texto": "Preparado el **prompt de arranque para Paola** (ver `PROMPT PARA PAOLA.md`)."
+    },
+    {
+      "fecha": "2026-08-04",
+      "quien": "C",
+      "texto": "Plan de **dashboard vivo en línea** definido; publicación pendiente."
+    },
+    {
+      "fecha": "2026-08-04",
+      "quien": "D",
+      "texto": "Elegidos correos Zoho: buzones contacto / ventas / proyectos / cotizaciones; alias angelsoriano, paolacruz, davidrodriguez, monserratbarajas, notificaciones, soporte."
+    },
+    {
+      "fecha": "2026-08-04",
+      "quien": "C",
+      "texto": "Panel con pestaña \"Bitácora en vivo\" + generador `_publicar/build.py` que arma el paquete desde este archivo. Modelo elegido: subdominio propio, se regenera desde el vault (ambos pueden publicar sin pisarse)."
+    },
+    {
+      "fecha": "2026-08-04",
+      "quien": "C",
+      "texto": "**Panel PUBLICADO** en Cloudflare Pages → https://bloomlicht-panel.pages.dev · subdominio https://panel.bloomlichtatelier.com (inicializando). Proyecto: bloomlicht-panel."
+    },
+    {
+      "fecha": "2026-08-04",
+      "quien": "D",
+      "texto": "Registró la cuenta de Zoho para bloomlichtatelier.com (pendiente: pasar el TXT de verificación para poner DNS en Cloudflare)."
+    }
+  ]
+}

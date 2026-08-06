@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloomlicht · Roadmap y Estructura</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root{--charcoal:#1a1a1a;--ink:#3d3a34;--linen:#f5f4ef;--paper:#fffdf9;--gold:#c6a87b;--gold-d:#a8843f;
+    --green:#4a9e63;--amber:#dca63a;--red:#c8524a;--slate:#7c8aa0;--line:#eae1d1;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Helvetica,Arial,sans-serif;background:var(--linen);color:var(--ink);line-height:1.55;padding:24px}
+  .wrap{max-width:1040px;margin:0 auto}
+  header{text-align:center;margin-bottom:8px}
+  h1{font-size:25px;color:var(--charcoal);letter-spacing:2px}.tagline{color:var(--gold-d);font-weight:600;font-size:13px}
+  .sub{color:#8a8069;font-size:11.5px}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold-d);margin:26px 0 12px;border-left:4px solid var(--gold);padding-left:10px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .mermaid{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto}
+  /* roadmap timeline */
+  .hz{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .col{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .col h4{font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--gold)}
+  .col.now h4{color:var(--red)}.col.next h4{color:var(--amber)}.col.later h4{color:var(--slate)}
+  .t{font-size:12.5px;margin:9px 0;padding-left:20px;position:relative}
+  .t:before{content:"";position:absolute;left:0;top:3px;width:12px;height:12px;border-radius:3px}
+  .t.done:before{background:var(--green)}.t.doing:before{background:var(--amber)}.t.todo:before{background:#d7cdb8;border:1px solid var(--gold)}
+  table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:12.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--charcoal);color:var(--linen)}tr:last-child td{border-bottom:none}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#6b6353;margin:8px 0 2px}
+  .dot{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px}
+  .note{font-size:12px;color:#6b6152;background:#fbf4e6;border:1px solid #ead9ad;border-radius:10px;padding:11px 15px;margin-top:12px}
+  footer{margin-top:24px;font-size:11px;color:#9a8f78;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>BLOOMLICHT · ROADMAP Y ESTRUCTURA</h1>
+    <div class="tagline">Luz, forma y propósito.</div>
+    <div class="sub">Detalle visual · 30 jul 2026 · fuente: Roadmap oficial + Modelo Organizacional v1</div>
+  </header>
+
+  <!-- ROADMAP -->
+  <h2>1 · Roadmap por horizontes</h2>
+  <div class="legend"><span><span class="dot" style="background:var(--green)"></span>Hecho</span><span><span class="dot" style="background:var(--amber)"></span>En curso</span><span><span class="dot" style="background:#d7cdb8;border:1px solid var(--gold)"></span>Pendiente</span></div>
+  <div class="hz">
+    <div class="col now"><h4>Ahora · Oferta</h4>
+      <div class="t done">T1 · Diagnóstico del punto actual</div>
+      <div class="t done">T2 · Roadmap</div>
+      <div class="t done">T3 · Filtro de calificación (CRM)</div>
+      <div class="t done">T4 · Mapa de servicios 1ª etapa</div>
+      <div class="t doing">T5 · Servicios 1ª etapa a fondo (6+11)</div>
+      <div class="t todo">T6 · Precios al cotizador</div>
+      <div class="t todo">T7 · Cotejar brief ↔ catálogo</div></div>
+    <div class="col next"><h4>Siguiente · Marca</h4>
+      <div class="t todo">T8 · Motor de prompt de logo</div>
+      <div class="t todo">T9 · Formatos de logo</div>
+      <div class="t todo">T10 · Stylescapes</div></div>
+    <div class="col later"><h4>Después · Backlog</h4>
+      <div class="t todo">Glosario integrado</div>
+      <div class="t todo">Capa Empresa (14 docs)</div>
+      <div class="t todo">Kit de cliente v6</div>
+      <div class="t todo">Validar Persona 1 con clientes</div></div>
+  </div>
+  <div class="note"><b>Dónde estamos:</b> como <b>marca</b> = Fase 4 (viva); como <b>empresa</b> = Fase 1 (2 personas). El sistema está casi completo; falta cerrar oferta y salir a validar con el primer cliente.</div>
+
+  <!-- ORGANIGRAMA -->
+  <h2>2 · Organigrama y responsabilidades</h2>
+  <div class="legend">
+    <span><span class="dot" style="background:#cfe6d5"></span>Cubierto hoy (David / Paola)</span>
+    <span><span class="dot" style="background:#f0e7d3"></span>Por contratar (Fase 2-3)</span>
+  </div>
+  <pre class="mermaid">
+flowchart TD
+  DG["DIRECCIÓN GENERAL<br/><small>Director · Asistente · Coordinador general</small>"]:::live
+  DG --> AB["Agencia &amp; Branding<br/><small>estrategia, identidad, naming, campañas</small>"]:::live
+  DG --> PA["Producción Audiovisual<br/><small>foto, video, motion, postproducción</small>"]:::hire
+  DG --> ED["Educación<br/><small>cursos, talleres, mentorías</small>"]:::hire
+  DG --> EV["Eventos<br/><small>producción y dirección de eventos</small>"]:::hire
+  DG --> TE["Tecnología<br/><small>web, apps, herramientas y automatización</small>"]:::live
+  DG --> RI["Redes e Influencers<br/><small>contenido, community, alianzas</small>"]:::hire
+  DG --> TX{{Áreas transversales}}:::t
+  TX --> ADM["Admin &amp; Finanzas<br/><small>contabilidad, fiscal, administración</small>"]:::hire
+  TX --> VEN["Ventas &amp; CRM<br/><small>prospección, cuentas, CRM</small>"]:::live
+  TX --> TH["Talento Humano<br/><small>reclutamiento, cultura, RRHH</small>"]:::hire
+  classDef live fill:#cfe6d5,stroke:#4a9e63,color:#1a1a1a;
+  classDef hire fill:#f0e7d3,stroke:#c6a87b,color:#1a1a1a;
+  classDef t fill:#e6dcff,stroke:#7c8aa0,color:#1a1a1a;
+  </pre>
+  <div class="note">Hoy (Fase 1) <b>David</b> cubre Dirección, Estrategia/Branding, Ventas y Tecnología; <b>Paola</b> apoya método, producción de documentos y el diagnóstico. Las demás cajas se contratan al crecer. Estructura madura = <b>26 puestos</b>.</div>
+
+  <h3 style="font-size:13px;color:var(--charcoal);margin:14px 0 6px">Puestos por área (Fase 3 · 26)</h3>
+  <table>
+    <tr><th>Área</th><th>Puestos</th></tr>
+    <tr><td>Dirección General</td><td>Director(a) General · Asistente de Dirección · Coordinador(a) General</td></tr>
+    <tr><td>Agencia &amp; Branding</td><td>Dir. Estrategia de Marca · Diseñador Sr · Diseñador Jr · Redactor Creativo · Gestor de Proyectos</td></tr>
+    <tr><td>Producción Audiovisual</td><td>Dir. Producción · Dir. Fotografía · Dir. Video · Editor de Video · Animador/Motion</td></tr>
+    <tr><td>Educación</td><td>Dir. Educación · Coord. Académico · Instructor/Facilitador · Diseñador Instruccional</td></tr>
+    <tr><td>Eventos</td><td>Dir. Eventos · Coord. Logística · Productor de Campo · Técnico AV/Escenografía</td></tr>
+    <tr><td>Tecnología</td><td>Dir. Tecnología · Desarrollador Web Sr · Desarrollador Web Jr · UX/UI Designer</td></tr>
+    <tr><td>Redes e Influencers</td><td>Dir. Redes · Community Manager · Analista de Datos Sociales · Coord. de Influencers</td></tr>
+    <tr><td>Admin &amp; Finanzas</td><td>Gerente Admin/Finanzas · Contador/Asesor Fiscal · Asistente Administrativo</td></tr>
+    <tr><td>Ventas &amp; CRM</td><td>Gerente Ventas/CRM · Ejecutivo de Cuentas · Analista de CRM</td></tr>
+    <tr><td>Talento Humano</td><td>Gerente Talento Humano · Coord. RRHH · Especialista en Cultura</td></tr>
+  </table>
+
+  <!-- PIPELINE -->
+  <h2>3 · Pipeline de construcción de la estructura (sistema de intake y análisis)</h2>
+  <div class="legend">
+    <span><span class="dot" style="background:#cfe6d5"></span>Base lista</span>
+    <span><span class="dot" style="background:#d8e4f2"></span>Método listo</span>
+    <span><span class="dot" style="background:#f0e7d3"></span>Por construir</span>
+    <span><span class="dot" style="background:#f4d4d0"></span>Bloqueo</span>
+  </div>
+  <pre class="mermaid">
+flowchart LR
+  N8N(["0 · Rescatar n8n"]):::block --> I1["1 · Brief adaptativo"]:::base
+  I1 --> I2["2 · + Arquetipo"]:::base
+  I2 --> I3["3 · Link de validación"]:::base
+  I3 --> I4["4 · Análisis 6 lentes"]:::method
+  I4 --> I5["5 · Prompts de logo"]:::method
+  I5 --> I6["6 · Generador OpenAI"]:::todo
+  I6 --> I7["7 · Kit de logos / vector"]:::todo
+  I4 --> NAM["Naming"]:::todo
+  classDef base fill:#cfe6d5,stroke:#4a9e63,color:#1a1a1a;
+  classDef method fill:#d8e4f2,stroke:#7c8aa0,color:#1a1a1a;
+  classDef todo fill:#f0e7d3,stroke:#c6a87b,color:#1a1a1a;
+  classDef block fill:#f4d4d0,stroke:#c8524a,color:#1a1a1a;
+  </pre>
+  <div class="note">Todo cuelga de rescatar <b>n8n</b> (paso 0). Los pasos 4 y 5 ya tienen <b>metodología lista</b> (Motor de Análisis 6 lentes y Motor de Prompts de Logo). Faltan por construir el generador de imágenes (OpenAI), el kit de logos y el naming.</div>
+
+  <footer>Se regenera junto con el Centro de Control · copia sintetizada en el Panel principal (pestaña Estructura)</footer>
+</div>
+<script>
+  mermaid.initialize({startOnLoad:true, theme:'base', themeVariables:{fontFamily:'Segoe UI', primaryColor:'#fffdf9', lineColor:'#a8843f', primaryBorderColor:'#c6a87b', fontSize:'13px'}});
+</script>
+</body>
+</html>

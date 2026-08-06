@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloomlicht · Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root{--charcoal:#1a1a1a;--ink:#3d3a34;--linen:#f5f4ef;--paper:#fffdf9;--gold:#c6a87b;--gold-d:#a8843f;
+    --green:#4a9e63;--amber:#dca63a;--red:#c8524a;--slate:#7c8aa0;--line:#eae1d1;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Helvetica,Arial,sans-serif;background:var(--linen);color:var(--ink);line-height:1.55;padding:22px}
+  .wrap{max-width:960px;margin:0 auto}
+  header{text-align:center;margin-bottom:6px;animation:drop .6s ease}
+  h1{font-size:26px;color:var(--charcoal);letter-spacing:2px}
+  .tagline{color:var(--gold-d);font-size:13px;margin-top:2px;font-weight:600}
+  .sub{color:#8a8069;font-size:11.5px;margin-top:2px}
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:16px 0 18px}
+  .tab{cursor:pointer;font-size:12.5px;font-weight:600;color:#8a8069;background:var(--paper);border:1px solid var(--line);padding:7px 14px;border-radius:22px;transition:.25s}
+  .tab:hover{border-color:var(--gold)} .tab.on{background:var(--charcoal);color:var(--linen);border-color:var(--charcoal)}
+  .panel{display:none;animation:fade .45s ease} .panel.on{display:block}
+  .hero{background:linear-gradient(135deg,#20201d,#33302a);color:var(--linen);border-radius:14px;padding:20px 22px;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+  .hero .k{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+  .hero h2{font-size:20px;margin:6px 0 4px} .hero p{font-size:13.5px;color:#d8d2c4}
+  .hero .cta{display:inline-block;margin-top:12px;background:var(--gold);color:#20201d;font-weight:700;font-size:13px;padding:8px 16px;border-radius:8px}
+  .gauges{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .gauge{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:15px 17px}
+  .gauge .lbl{font-size:12px;color:#8a8069}.gauge .val{font-size:16px;font-weight:700;color:var(--charcoal);margin:2px 0 8px}
+  .bar{height:9px;background:#ece4d5;border-radius:6px;overflow:hidden}
+  .bar>i{display:block;height:100%;border-radius:6px;width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+  .fill-g{background:var(--green)}.fill-a{background:var(--amber)}.fill-r{background:var(--red)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;opacity:0;transform:translateY(8px);animation:rise .5s forwards}
+  .card h3{font-size:14px;color:var(--charcoal);display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}
+  .card p{font-size:12.5px;color:#6b6152;margin-bottom:8px}
+  .chip{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;color:#fff}
+  .cg{background:var(--green)}.ca{background:var(--amber)}.cr{background:var(--red)}.cs{background:var(--slate)}
+  .hz{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .col{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .col h4{font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--gold)}
+  .col.now h4{color:var(--red)}.col.next h4{color:var(--amber)}.col.later h4{color:var(--slate)}
+  .task{font-size:12.5px;margin:8px 0;padding-left:22px;position:relative}
+  .task:before{content:"";position:absolute;left:0;top:2px;width:14px;height:14px;border-radius:4px;border:2px solid var(--gold)}
+  .task.doing:before{background:var(--amber);border-color:var(--amber)}
+  .step{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:9px;opacity:0;transform:translateX(-8px);animation:slide .5s forwards}
+  .step .n{flex:0 0 30px;height:30px;border-radius:50%;background:var(--charcoal);color:var(--gold);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .step .b{flex:1}.step h5{font-size:13px;color:var(--charcoal);display:flex;justify-content:space-between;gap:8px;align-items:center}.step p{font-size:12px;color:#6b6152;margin-top:3px}
+  .lnk{display:flex;flex-direction:column;gap:8px}
+  .lnk a{display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:var(--charcoal);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:11px 15px;font-size:13px;transition:.2s}
+  .lnk a:hover{border-color:var(--gold);transform:translateX(3px)} .lnk a span{color:var(--gold-d);font-size:16px}
+  .lnk .cat{font-size:11px;letter-spacing:1px;color:#8a8069;text-transform:uppercase;margin:12px 0 2px}
+  table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:12.5px}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line)}th{background:var(--charcoal);color:var(--linen)}tr:last-child td{border-bottom:none}
+  .note{font-size:12px;color:#6b6152;background:#fbf4e6;border:1px solid #ead9ad;border-radius:10px;padding:11px 15px;margin-top:12px}
+  .rescue{counter-reset:r;background:var(--paper);border:1px solid #ead9ad;border-radius:12px;padding:16px 20px}
+  .rescue div{font-size:13px;margin:9px 0;padding-left:34px;position:relative}
+  .rescue div:before{counter-increment:r;content:counter(r);position:absolute;left:0;top:-2px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#20201d;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:12px}
+  footer{margin-top:22px;font-size:11px;color:#9a8f78;text-align:center}
+  @keyframes fade{from{opacity:0}to{opacity:1}}@keyframes drop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+  @keyframes rise{to{opacity:1;transform:none}}@keyframes slide{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>BLOOMLICHT</h1>
+    <div class="tagline">Luz, forma y propósito.</div>
+    <div class="sub">Panel · 30 jul 2026 · hub v20 · Empresa v7 · (interno: "la IA produce; una persona cura y decide")</div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab on" data-t="resumen">● Resumen</div>
+    <div class="tab" data-t="frentes">Frentes</div>
+    <div class="tab" data-t="plan">Plan</div>
+    <div class="tab" data-t="intake">Intake</div>
+    <div class="tab" data-t="construido">Construido</div>
+    <div class="tab" data-t="precios">Precios</div>
+    <div class="tab" data-t="estructura">Estructura</div>
+    <div class="tab" data-t="ecosistema">Ecosistema</div>
+    <div class="tab" data-t="n8n">Rescate n8n</div>
+    <div class="tab" data-t="flujo">🔗 Flujo</div>
+    <div class="tab" data-t="bitacora">🗒️ Bitácora</div>
+  </div>
+
+  <section class="panel on" id="resumen">
+    <div class="hero">
+      <div class="k">Enfócate en esto ahora</div>
+      <h2>Cerrar la oferta comercial</h2>
+      <p>El sistema de marca ya está casi completo. Lo que falta no es más sistema: es ponerle <b>precio a los servicios</b> y <b>salir con el primer cliente</b>. No refinar en papel.</p>
+      <span class="cta">Siguiente: precios al cotizador →</span>
+    </div>
+    <div class="gauges">
+      <div class="gauge"><div class="lbl">Como MARCA (Caso 0)</div><div class="val">Fase 4 · Marca viva</div><div class="bar"><i class="fill-g" data-w="90%"></i></div></div>
+      <div class="gauge"><div class="lbl">Como EMPRESA</div><div class="val">Fase 1 · Arrancando</div><div class="bar"><i class="fill-a" data-w="30%"></i></div></div>
+    </div>
+    <div class="gauges" style="grid-template-columns:1fr">
+      <div class="gauge"><div class="lbl">Meta de fondo</div><div class="val" style="font-size:14px">Que la empresa NO dependa de David ni Paola → onboarding automático de clientes</div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="frentes">
+    <div class="grid">
+      <div class="card"><h3>Hub v20 + Manual <span class="chip cg">Listo</span></h3><p>41 servicios, gobernanza, pipeline, rúbrica, kit.</p><div class="bar"><i class="fill-g" data-w="95%"></i></div></div>
+      <div class="card"><h3>Framework / método <span class="chip cg">Listo</span></h3><p>Fases 1-3 + SIM (85 activos).</p><div class="bar"><i class="fill-g" data-w="90%"></i></div></div>
+      <div class="card"><h3>Activos visuales <span class="chip ca">Parcial</span></h3><p>Solo monograma; falta logotipo principal.</p><div class="bar"><i class="fill-a" data-w="40%"></i></div></div>
+      <div class="card"><h3>Oferta / precios <span class="chip ca">En curso</span></h3><p>Servicios mapeados; falta precio (ver Precios).</p><div class="bar"><i class="fill-a" data-w="45%"></i></div></div>
+      <div class="card"><h3>CRM + Persona 1 <span class="chip cg">Listo</span></h3><p>Falta validar con clientes.</p><div class="bar"><i class="fill-g" data-w="80%"></i></div></div>
+      <div class="card"><h3>Intake propio (n8n) <span class="chip cr">En rescate</span></h3><p>25 workflows; n8n vencido.</p><div class="bar"><i class="fill-r" data-w="55%"></i></div></div>
+      <div class="card"><h3>Contrato maestro <span class="chip cr">Pendiente</span></h3><p>Por redactar.</p><div class="bar"><i class="fill-r" data-w="20%"></i></div></div>
+      <div class="card"><h3>Ventas / clientes <span class="chip ca">Parcial</span></h3><p>Smoky (sin firmar), VERDEVAL (test).</p><div class="bar"><i class="fill-a" data-w="35%"></i></div></div>
+      <div class="card"><h3>Diagnóstico 1.1 (servicio) <span class="chip cg">Listo</span></h3><p>Servicio de entrada (por Paola): instrumento + runbook 11 pasos + veredicto. Consume el intake y el análisis.</p><div class="bar"><i class="fill-g" data-w="85%"></i></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="plan">
+    <div class="hz">
+      <div class="col now"><h4>Ahora · oferta</h4><div class="task doing">T5 · Servicios 1ª etapa a fondo</div><div class="task">T6 · Precios al cotizador</div><div class="task">T7 · Cotejar brief ↔ catálogo</div></div>
+      <div class="col next"><h4>Siguiente · marca</h4><div class="task">T8 · Prompt de logo</div><div class="task">T9 · Formatos de logo</div><div class="task">T10 · Stylescapes</div></div>
+      <div class="col later"><h4>Después · backlog</h4><div class="task">Glosario integrado</div><div class="task">Capa Empresa (14 docs)</div><div class="task">Kit cliente v6</div><div class="task">Validar Persona 1</div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="intake">
+    <div class="step"><div class="n">1</div><div class="b"><h5>Brief adaptativo <span class="chip cg">Base</span></h5><p>Amigable, se adapta, no hostiga. Canal propio.</p></div></div>
+    <div class="step"><div class="n">2</div><div class="b"><h5>Brief + arquetipo <span class="chip ca">Parcial</span></h5><p>Genera y analiza el brief; asigna arquetipo.</p></div></div>
+    <div class="step"><div class="n">3</div><div class="b"><h5>Link de validación <span class="chip ca">Base</span></h5><p>Cliente revisa, corrige y complementa sin agobio.</p></div></div>
+    <div class="step"><div class="n">4</div><div class="b"><h5>Análisis profundo · 6 lentes <span class="chip ca">Método listo</span></h5><p>Psico, marketing, diseño, redes, auditor, financiera + emulación humana. Competencia real vs declarada.</p></div></div>
+    <div class="step"><div class="n">5</div><div class="b"><h5>Prompts de logo <span class="chip ca">Método listo</span></h5><p>Prompts profesionales, no genéricos → generador OpenAI.</p></div></div>
+    <div class="step"><div class="n">6</div><div class="b"><h5>Kit de logos / imagen <span class="chip cr">Por construir</span></h5><p>Vectoriza y arma kit multiformato reutilizable.</p></div></div>
+    <div class="note">➜ La salida cliente-facing de los pasos 1-4 es el <b>Diagnóstico 1.1</b> (servicio, por Paola): veredicto + plan de prioridades. Hoy se corre a mano; falta conectarlo a n8n.</div>
+  </section>
+
+  <section class="panel" id="construido">
+    <div class="lnk">
+      <div class="cat">🟢 En vivo · dominio propio</div>
+      <a href="https://n8n.bloomlichtatelier.com" target="_blank">n8n · motor de automatización (HTTPS) <span>→</span></a>
+      <a href="https://validacion.bloomlichtatelier.com" target="_blank">Validación de brief (cliente) <span>→</span></a>
+      <a href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank">Formulario / entrevista de brief <span>→</span></a>
+      <a href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank">Cotizador <span>→</span></a>
+      <a href="generador.html" target="_blank"><b>⭐ Generador de links por proyecto (manual)</b> — escribe el proyecto y copia el link <span>→</span></a>
+      <div class="note" style="margin:2px 0 6px">Herramienta manual: pon el nombre del proyecto → <b>Generar</b> → <b>Copiar</b> el link con token → envíalo al cliente. No necesita n8n.</div>
+      <div class="cat">⚙️ Automatizaciones n8n (25 workflows)</div>
+      <a href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Ver todos los workflows <span>→</span></a>
+      <div class="note" style="margin:2px 0 6px">Incluye: <b>Intake Fase 3</b> (recibe el brief/entrevista, 70 nodos) · <b>Generar Link de Validación</b> (el generador de tokens) · Validación Full V5 · Cierre V3 · <b>Competencia V4</b> · <b>Clasificador de logo (visión)</b> · Ingesta Consumidor · Backfill a Supabase.</div>
+      <div class="cat">🧠 Herramientas y método (docs)</div>
+      <a href="Actualizado/08_Herramientas_Nuevas/Motor_Analisis_Profundo_Brief_6_Lentes.md" target="_blank">Motor de Análisis · 6 lentes <span>→</span></a>
+      <a href="Actualizado/08_Herramientas_Nuevas/Motor_Prompts_Diseno_Logo.md" target="_blank">Motor de Prompts de Logo <span>→</span></a>
+      <a href="Actualizado/07_Diagnostico_Paola/LEEME.pdf" target="_blank">Diagnóstico 1.1 (Paola) <span>→</span></a>
+      <a href="Actualizado/08_Herramientas_Nuevas/Plan_Construccion_Herramientas.md" target="_blank">Plan de Construcción <span>→</span></a>
+      <a href="Actualizado/08_Herramientas_Nuevas/n8n_selfhost/00_Decision_y_Runbook_n8n.md" target="_blank">Runbook / infra n8n <span>→</span></a>
+      <div class="cat">🎨 Marca y empresa</div>
+      <a href="Actualizado/01_Brand_Hub_v20/00_manual/Bloomlicht_Manual_Identidad_Visual_v2.pdf" target="_blank">Manual de Identidad v2 (PDF) <span>→</span></a>
+      <a href="Actualizado/02_Empresa_v7/Roadmap_Bloomlicht.docx" target="_blank">Roadmap Bloomlicht <span>→</span></a>
+      <a href="Roadmap_y_Estructura_Bloomlicht.html" target="_blank">Roadmap y estructura (visual) <span>→</span></a>
+      <div class="cat">🗄️ Internas (locales, aún no publicadas)</div>
+      <a href="Web%20y%20Sistemas/Bloomlicht_Pipeline_CRM_v1.html" target="_blank">Pipeline CRM <span>→</span></a>
+      <a href="Web%20y%20Sistemas/bandeja_bloomlicht.html" target="_blank">Bandeja <span>→</span></a>
+      <a href="Web%20y%20Sistemas/asistente_negocios.html" target="_blank">Asistente de negocios <span>→</span></a>
+    </div>
+    <div class="note">El <b>generador de tokens</b> y el <b>brief/entrevista</b> viven dentro de n8n (workflows "Generar Link de Validación" e "Intake Fase 3") + las páginas públicas de arriba. Faltan por conectar las 5 credenciales para que corran de punta a punta.</div>
+  </section>
+
+  <section class="panel" id="precios">
+    <div class="note" style="margin:0 0 12px"><b>Recalibrado a mercado real PyME GDL (v2).</b> Ancla en MXN (sin IVA). Detalle: <b>08_Herramientas_Nuevas/Tarifario_Bloomlicht_v1.md</b>.</div>
+    <table>
+      <tr><th>Núcleo</th><th>Económico</th><th>Ancla</th><th>Premium</th></tr>
+      <tr><td>1.1 Diagnóstico</td><td>$3,000</td><td>$4,500</td><td>$8,000</td></tr>
+      <tr><td>1.2 Plataforma</td><td>$6,000</td><td>$10,000</td><td>$16,000</td></tr>
+      <tr><td>1.7 Logotipo y sistema</td><td>$5,000</td><td>$9,000</td><td>$18,000</td></tr>
+      <tr><td>1.8 Color y tipografía</td><td>$3,000</td><td>$4,000</td><td>incl.</td></tr>
+      <tr><td>1.9 Manual identidad</td><td>$8,000</td><td>$15,000</td><td>$35,000</td></tr>
+      <tr><td>1.10 Voz de marca</td><td>$4,000</td><td>$7,000</td><td>$11,000</td></tr>
+      <tr><td><b>Paquete Sistema</b></td><td>$30,000</td><td><b>$45,000</b></td><td>$65,000</td></tr>
+    </table>
+    <table style="margin-top:10px">
+      <tr><th>Combos y complementos</th><th>Ancla</th></tr>
+      <tr><td><b>Logo + etiqueta</b></td><td><b>$10,000–14,000</b></td></tr>
+      <tr><td>Logo + tarjeta (Express)</td><td>$6,000–10,000</td></tr>
+      <tr><td>1.6 Naming</td><td>$8,000</td></tr>
+      <tr><td>1.11 Papelería</td><td>$4,000</td></tr>
+      <tr><td>1.14 Presentación / dossier</td><td>$9,000</td></tr>
+      <tr><td>1.12 Empaque (solo diseño)</td><td>$8,000 / SKU</td></tr>
+      <tr><td>1.15 Catálogo y fichas</td><td>$8,000</td></tr>
+      <tr><td>1.17 Copywriting (pieza)</td><td>$2,500</td></tr>
+    </table>
+    <table style="margin-top:10px">
+      <tr><th>Tiers / Igualas</th><th>Precio</th></tr>
+      <tr><td>Express (logo + tarjeta)</td><td>$6,000–12,000</td></tr>
+      <tr><td>Marca Esencial</td><td>$18,000–30,000</td></tr>
+      <tr><td>Estudio (sistema completo)</td><td>$40,000–65,000</td></tr>
+      <tr><td>Integral 360°</td><td>$80,000–130,000</td></tr>
+      <tr><td>Iguala Light / Crecimiento / Integral</td><td>$5-8k / $10-18k / $25k+ /mes</td></tr>
+      <tr><td>Tercerizados</td><td>costo aliado + 15-20%</td></tr>
+    </table>
+    <div class="note" style="margin-top:12px"><b>Estrategia:</b> el <b>Express</b> es el gancho para presupuestos chicos; subes con el diagnóstico acreditable y paquetes. Tu costo bajo (IA produce, tú curas) = precio competitivo con 60-75% de margen. Descuentos máx 10-15% con contraprestación. Otras marcas tuyas: −20 a −40% con CFDI.</div>
+  </section>
+
+  <section class="panel" id="estructura">
+    <div class="note" style="margin-top:0">Organigrama (hoy lo cubren David y Paola; el resto se contrata al crecer) y pipeline de construcción. Versión detallada: <b>Roadmap_y_Estructura_Bloomlicht.html</b>.</div>
+    <h3 style="font-size:13px;color:var(--charcoal);margin:14px 0 6px">Organigrama · responsabilidades</h3>
+    <pre class="mermaid">
+flowchart TD
+  DG["Dirección General"]:::live
+  DG --> AB["Agencia &amp; Branding"]:::live
+  DG --> PA["Producción AV"]:::hire
+  DG --> ED["Educación"]:::hire
+  DG --> EV["Eventos"]:::hire
+  DG --> TE["Tecnología"]:::live
+  DG --> RI["Redes e Influencers"]:::hire
+  DG --> ADM["Admin &amp; Finanzas"]:::hire
+  DG --> VEN["Ventas &amp; CRM"]:::live
+  DG --> TH["Talento Humano"]:::hire
+  classDef live fill:#cfe6d5,stroke:#4a9e63,color:#1a1a1a;
+  classDef hire fill:#f0e7d3,stroke:#c6a87b,color:#1a1a1a;
+    </pre>
+    <h3 style="font-size:13px;color:var(--charcoal);margin:16px 0 6px">Pipeline de construcción</h3>
+    <pre class="mermaid">
+flowchart LR
+  N8N(["0 · n8n"]):::block --> I1["1 · Brief"]:::base --> I2["2 · Arquetipo"]:::base --> I3["3 · Validación"]:::base --> I4["4 · Análisis 6 lentes"]:::method --> I5["5 · Prompts logo"]:::method --> I6["6 · OpenAI img"]:::todo --> I7["7 · Kit logos"]:::todo
+  I4 --> NAM["Naming"]:::todo
+  classDef base fill:#cfe6d5,stroke:#4a9e63,color:#1a1a1a;
+  classDef method fill:#d8e4f2,stroke:#7c8aa0,color:#1a1a1a;
+  classDef todo fill:#f0e7d3,stroke:#c6a87b,color:#1a1a1a;
+  classDef block fill:#f4d4d0,stroke:#c8524a,color:#1a1a1a;
+    </pre>
+    <div class="lnk" style="margin-top:12px"><a href="Roadmap_y_Estructura_Bloomlicht.html" target="_blank">Ver roadmap y estructura en detalle <span>&rarr;</span></a></div>
+  </section>
+
+  <section class="panel" id="ecosistema">
+    <div class="note" style="margin-top:0">Flujo de todas las herramientas y automatizaciones de Bloomlicht: qué existe, qué falta y cómo se conecta con la metodología. n8n (self-host) es la capa que orquesta todo.</div>
+    <div class="legend"><span><span class="dot" style="background:#cfe6d5"></span>Base lista</span><span><span class="dot" style="background:#d8e4f2"></span>Método listo</span><span><span class="dot" style="background:#f0e7d3"></span>Por construir</span><span><span class="dot" style="background:#f4d4d0"></span>Bloqueo</span></div>
+    <pre class="mermaid">
+flowchart LR
+  CRM["CRM + Persona 1"]:::base --> BRF["Brief adaptativo"]:::base
+  subgraph E["1 · Descubrimiento"]
+    BRF --> ARQ["+ Arquetipo"]:::base --> VAL["Validación + evidencia"]:::base
+  end
+  subgraph A["2 · Análisis profundo"]
+    L6["Consejo 6 lentes"]:::method --> COMP["Competencia y mercado"]:::wip --> ICP["Perfil cliente ideal"]:::todo
+  end
+  subgraph C["3 · Creación"]
+    NAM["Naming"]:::todo
+    PL["Prompts de logo"]:::method --> OAI["Generador OpenAI"]:::todo --> KIT["Kit de logos / vector"]:::todo
+  end
+  subgraph P["4 · Marca viva"]
+    HUB["Brand Hub v20"]:::base --> PIPE["Pipeline IA + rúbrica"]:::wip
+  end
+  VAL --> L6
+  ICP --> DIAG["Diagnóstico 1.1 · veredicto + plan (Paola)"]:::base
+  DIAG --> HUB
+  ICP --> NAM
+  ICP --> PL
+  KIT --> PIPE
+  AUD["Consejo Auditor"]:::base -.audita.-> PIPE
+  COT["Cotizador + tarifario"]:::wip -.cotiza.-> P
+  N8N["n8n self-host · orquesta"]:::block
+  N8N -.-> VAL
+  N8N -.-> COMP
+  N8N -.-> PIPE
+  classDef base fill:#cfe6d5,stroke:#4a9e63,color:#1a1a1a;
+  classDef method fill:#d8e4f2,stroke:#7c8aa0,color:#1a1a1a;
+  classDef wip fill:#fbeecb,stroke:#dca63a,color:#1a1a1a;
+  classDef todo fill:#f0e7d3,stroke:#c6a87b,color:#1a1a1a;
+  classDef block fill:#f4d4d0,stroke:#c8524a,color:#1a1a1a;
+    </pre>
+    <div class="note">Alimenta las <b>6 líneas de servicio</b> (Agencia &amp; Branding, Producción AV, Educación, Eventos, Tecnología, Redes). Hoy el set de lanzamiento son 17 servicios; el resto del catálogo (41) se activa por demanda.</div>
+  </section>
+
+  <section class="panel" id="n8n">
+    <div class="note" style="border-color:#a9d3b4;background:#eef7f0;margin-top:0"><b>✅ n8n EN VIVO y AUTÓNOMO:</b> corriendo en <b>https://n8n.bloomlichtatelier.com</b> (self-host Hetzner + Caddy/Let's Encrypt, HTTPS). Sin topes de workflows/ejecuciones. <b>25 workflows</b> importados y <b>5 credenciales conectadas</b> (Anthropic · Google Sheets · Google Drive · Gmail · Postgres/Supabase).</div>
+    <div class="lnk" style="margin:10px 0">
+      <a href="https://n8n.bloomlichtatelier.com" target="_blank">Abrir n8n <span>→</span></a>
+      <a href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Ver los 25 workflows <span>→</span></a>
+    </div>
+    <div class="col now" style="max-width:520px"><h4>Pendientes n8n</h4>
+      <div class="task">Asignar credencial Anthropic a 2 nodos "Claude" huérfanos</div>
+      <div class="task">Prueba de punta a punta del intake (brief → análisis → veredicto)</div>
+      <div class="task">Seguridad: revocar la API key de n8n expuesta (Settings → n8n API)</div>
+    </div>
+    <div class="note" style="margin-top:12px"><b>Respaldo / almacenamiento:</b> n8n guarda su config en Postgres (Supabase) y puede escribir resultados a <b>Google Drive/Sheets</b> y correo <b>Zoho</b>. Plan de respaldo en <b>08_Herramientas_Nuevas/n8n_selfhost/</b>.</div>
+  </section>
+
+  <section class="panel" id="flujo">
+    <style>
+      .tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin:6px 0 4px}
+      .tool{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;text-decoration:none;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 8px;color:var(--charcoal);transition:.18s}
+      .tool:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+      .tool .ic{font-size:30px;line-height:1}
+      .tool b{font-size:13px}.tool small{font-size:11px;color:#8a8069}
+      .flow{display:flex;flex-direction:column;gap:0;margin-top:6px}
+      .fstep{display:flex;align-items:center;gap:14px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+      .fstep .num{flex:0 0 auto;width:40px;height:40px;border-radius:50%;background:var(--charcoal);color:var(--gold);font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center}
+      .fstep .emj{font-size:26px}
+      .fstep .txt{flex:1}.fstep .txt b{font-size:14px;color:var(--charcoal)}.fstep .txt p{font-size:12.5px;color:#6b6152;margin:2px 0 0}
+      .fstep .go{flex:0 0 auto;background:var(--gold);color:#20201d;font-weight:700;font-size:12.5px;text-decoration:none;padding:9px 14px;border-radius:9px;white-space:nowrap}
+      .fstep .go:hover{background:#9d551a;color:#fff}
+      .arrow{align-self:center;color:var(--gold);font-size:20px;line-height:1;margin:4px 0}
+    </style>
+
+    <div class="note" style="margin-top:0"><b>🧰 Tus herramientas</b> — un clic y se abre. Abajo, el <b>paso a paso</b> de un proyecto.</div>
+    <div class="tools">
+      <a class="tool" href="https://panel.bloomlichtatelier.com" target="_blank"><span class="ic">📊</span><b>Panel</b><small>ver todo</small></a>
+      <a class="tool" href="generador.html" target="_blank"><span class="ic">🔗</span><b>Generar link</b><small>por proyecto</small></a>
+      <a class="tool" href="https://validacion.bloomlichtatelier.com" target="_blank"><span class="ic">📝</span><b>Validación</b><small>brief cliente</small></a>
+      <a class="tool" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank"><span class="ic">💲</span><b>Cotizador</b><small>precios</small></a>
+      <a class="tool" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank"><span class="ic">🤖</span><b>n8n</b><small>automatización</small></a>
+      <a class="tool" href="https://mail.zoho.com" target="_blank"><span class="ic">✉️</span><b>Correo</b><small>Zoho</small></a>
+    </div>
+
+    <h3 style="font-size:13px;color:var(--charcoal);margin:16px 0 8px">🪜 Paso a paso de un proyecto</h3>
+    <div class="flow">
+      <div class="fstep"><div class="num">1</div><span class="emj">🆕</span><div class="txt"><b>Nuevo proyecto</b><p>Ponle un código corto y úsalo en todo: <b>PROY-A</b>.</p></div></div>
+      <div class="arrow">▼</div>
+      <div class="fstep"><div class="num">2</div><span class="emj">🔗</span><div class="txt"><b>Genera el link del proyecto</b><p>Escribe el nombre → Generar → Copiar el link con token.</p></div><a class="go" href="generador.html" target="_blank">Abrir</a></div>
+      <div class="arrow">▼</div>
+      <div class="fstep"><div class="num">3</div><span class="emj">📤</span><div class="txt"><b>Mándaselo al cliente</b><p>Por correo (ventas@ o proyectos@), asunto con el código [PROY-A].</p></div><a class="go" href="https://mail.zoho.com" target="_blank">Abrir correo</a></div>
+      <div class="arrow">▼</div>
+      <div class="fstep"><div class="num">4</div><span class="emj">📝</span><div class="txt"><b>El cliente llena su brief</b><p>Abre el link y contesta; así vemos qué necesita.</p></div><a class="go" href="https://validacion.bloomlichtatelier.com" target="_blank">Ver página</a></div>
+      <div class="arrow">▼</div>
+      <div class="fstep"><div class="num">5</div><span class="emj">🤖</span><div class="txt"><b>El sistema lo analiza</b><p>n8n procesa el brief (intake + análisis) automáticamente.</p></div><a class="go" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Abrir n8n</a></div>
+      <div class="arrow">▼</div>
+      <div class="fstep"><div class="num">6</div><span class="emj">💲</span><div class="txt"><b>Cotiza</b><p>Arma el precio en el cotizador.</p></div><a class="go" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank">Abrir cotizador</a></div>
+      <div class="arrow">▼</div>
+      <div class="fstep"><div class="num">7</div><span class="emj">✉️</span><div class="txt"><b>Envía la propuesta</b><p>Correo al cliente con la cotización (asunto [PROY-A]).</p></div><a class="go" href="https://mail.zoho.com" target="_blank">Abrir correo</a></div>
+      <div class="arrow">▼</div>
+      <div class="fstep"><div class="num">8</div><span class="emj">🗒️</span><div class="txt"><b>Anota el avance</b><p>Una línea en la bitácora: "PROY-A: enviada propuesta".</p></div><a class="go" href="https://panel.bloomlichtatelier.com" target="_blank">Ver panel</a></div>
+    </div>
+    <div class="note" style="margin-top:12px">Detalle "para dummies" en el <b>Manual de Operación Bloomlicht</b> (carpeta Bloomlicht).</div>
+  </section>
+
+  <section class="panel" id="bitacora">
+    <div class="note" style="margin-top:0">Registro vivo de avances de <b>David</b> y <b>Paola</b>. Cuando esté conectada la <b>Google Sheet compartida</b>, cada avance que escriban aparece aquí al recargar (se actualiza solo). Mientras, muestra la última foto publicada.</div>
+    <div id="bita-meta" style="font-size:11.5px;color:#8a8069;margin:6px 2px 12px"></div>
+    <div id="bita-live" class="lnk"><div class="note">Cargando avances…</div></div>
+  </section>
+
+  <footer>Se regenera desde el Vault Compartido (Bloomlicht › Bloomlicht — Vault Compartido) · publican David o Paola</footer>
+</div>
+<script>
+  const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
+  function bars(p){p.querySelectorAll('.bar>i').forEach(b=>{b.style.width='0';setTimeout(()=>b.style.width=b.dataset.w,60)})}
+  tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('on'));t.classList.add('on');panels.forEach(p=>p.classList.remove('on'));const el=document.getElementById(t.dataset.t);el.classList.add('on');bars(el)}));
+  bars(document.getElementById('resumen'));
+  // ===== Bitácora en vivo =====
+  // Para que se actualice SOLO: pega aquí el enlace CSV publicado de la Google Sheet
+  // (en la hoja: Archivo → Compartir → Publicar en la Web → Valores separados por comas (.csv) → Publicar).
+  // Si se deja vacío, el panel usa avances.json (la foto del último publish).
+  const SHEET_CSV_URL = "";
+  (function(){
+    const who={D:['#4a9e63','David'],P:['#a8843f','Paola'],C:['#7c8aa0','Claude']};
+    const meta=document.getElementById('bita-meta'),box=document.getElementById('bita-live');
+    function render(items){
+      meta.textContent=items.length+' avances · actualizado '+new Date().toLocaleString('es-MX');
+      if(!items.length){box.innerHTML='<div class="note">Aún sin avances registrados.</div>';return;}
+      box.innerHTML=items.map(it=>{
+        const w=who[(it.quien||'').trim().charAt(0).toUpperCase()]||['#8a8069',it.quien||'—'];
+        return '<div class="step"><div class="n" style="background:'+w[0]+';color:#fff;font-size:11px">'+((it.quien||'?').trim().charAt(0)||'?')+'</div>'+
+               '<div class="b"><h5>'+(it.fecha||'')+' · '+w[1]+'</h5><p>'+(it.texto||'').replace(/</g,'&lt;')+'</p></div></div>';
+      }).join('');
+    }
+    function parseCSV(text){
+      const rows=[];let i=0,f='',row=[],q=false;
+      while(i<text.length){const c=text[i];
+        if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}
+        else{if(c==='"')q=true;else if(c===','){row.push(f);f='';}
+          else if(c==='\n'||c==='\r'){if(f!==''||row.length){row.push(f);rows.push(row);row=[];f='';}if(c==='\r'&&text[i+1]==='\n')i++;}
+          else f+=c;}
+        i++;}
+      if(f!==''||row.length){row.push(f);rows.push(row);}
+      if(!rows.length)return[];
+      rows.shift(); // quita encabezado (Fecha,Quien,Texto)
+      return rows.filter(r=>r.join('').trim()).map(r=>{
+        if(r.length>=3 && (r[1]||'').trim() && (r[2]||'').trim()) return {fecha:(r[0]||'').trim(),quien:(r[1]||'').trim(),texto:r.slice(2).join(', ').trim()};
+        const m=r.join(' ').trim().match(/^(\S+)\s+(\S+)\s+([\s\S]+)$/);
+        return m?{fecha:m[1],quien:m[2],texto:m[3]}:{fecha:'',quien:'',texto:r.join(' ').trim()};
+      }).reverse();
+    }
+    function fallback(){box.innerHTML='<div class="note">La bitácora en vivo aparece al conectar la Google Sheet. Mientras, el registro está en <b>Bitácora Compartida.md</b> (vault).</div>';meta.textContent='';}
+    if(SHEET_CSV_URL){
+      fetch(SHEET_CSV_URL+(SHEET_CSV_URL.includes('?')?'&':'?')+'_='+Date.now()).then(r=>r.text()).then(t=>render(parseCSV(t))).catch(fallback);
+    }else{
+      fetch('avances.json?_='+Date.now()).then(r=>r.json()).then(d=>render(d.items||[])).catch(fallback);
+    }
+  })();
+  if(window.mermaid){mermaid.initialize({startOnLoad:true,securityLevel:'loose',theme:'base',themeVariables:{fontFamily:'Segoe UI',lineColor:'#a8843f',primaryColor:'#fffdf9',primaryBorderColor:'#c6a87b',fontSize:'12px'}});}
+</script>
+</body>
+</html>
