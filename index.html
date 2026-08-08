@@ -65,7 +65,7 @@
   <header>
     <h1>BLOOMLICHT</h1>
     <div class="tagline">Luz, forma y propósito.</div>
-    <div class="sub">Panel · 30 jul 2026 · hub v20 · Empresa v7 · (interno: "la IA produce; una persona cura y decide")</div>
+    <div class="sub">Panel · 8 ago 2026 · hub v25 · Empresa v9 · (interno: "la IA produce; una persona cura y decide")</div>
   </header>
 
   <div class="tabs">
@@ -105,7 +105,7 @@
       <div class="card"><h3>Activos visuales <span class="chip ca">Parcial</span></h3><p>Solo monograma; falta logotipo principal.</p><div class="bar"><i class="fill-a" data-w="40%"></i></div></div>
       <div class="card"><h3>Oferta / precios <span class="chip ca">En curso</span></h3><p>Servicios mapeados; falta precio (ver Precios).</p><div class="bar"><i class="fill-a" data-w="45%"></i></div></div>
       <div class="card"><h3>CRM + Persona 1 <span class="chip cg">Listo</span></h3><p>Falta validar con clientes.</p><div class="bar"><i class="fill-g" data-w="80%"></i></div></div>
-      <div class="card"><h3>Intake propio (n8n) <span class="chip cr">En rescate</span></h3><p>25 workflows; n8n vencido.</p><div class="bar"><i class="fill-r" data-w="55%"></i></div></div>
+      <div class="card"><h3>Intake propio (n8n) <span class="chip ca">Reconectando</span></h3><p>n8n en vivo (Hetzner). Tras migrar, se están re-vinculando las credenciales workflow por workflow.</p><div class="bar"><i class="fill-a" data-w="60%"></i></div></div>
       <div class="card"><h3>Contrato maestro <span class="chip cr">Pendiente</span></h3><p>Por redactar.</p><div class="bar"><i class="fill-r" data-w="20%"></i></div></div>
       <div class="card"><h3>Ventas / clientes <span class="chip ca">Parcial</span></h3><p>Smoky (sin firmar), VERDEVAL (test).</p><div class="bar"><i class="fill-a" data-w="35%"></i></div></div>
       <div class="card"><h3>Diagnóstico 1.1 (servicio) <span class="chip cg">Listo</span></h3><p>Servicio de entrada (por Paola): instrumento + runbook 11 pasos + veredicto. Consume el intake y el análisis.</p><div class="bar"><i class="fill-g" data-w="85%"></i></div></div>
@@ -273,7 +273,7 @@ flowchart LR
   </section>
 
   <section class="panel" id="n8n">
-    <div class="note" style="border-color:#a9d3b4;background:#eef7f0;margin-top:0"><b>✅ n8n EN VIVO y AUTÓNOMO:</b> corriendo en <b>https://n8n.bloomlichtatelier.com</b> (self-host Hetzner + Caddy/Let's Encrypt, HTTPS). Sin topes de workflows/ejecuciones. <b>25 workflows</b> importados y <b>5 credenciales conectadas</b> (Anthropic · Google Sheets · Google Drive · Gmail · Postgres/Supabase).</div>
+    <div class="note" style="border-color:#a9d3b4;background:#eef7f0;margin-top:0"><b>✅ n8n EN VIVO:</b> corriendo en <b>https://n8n.bloomlichtatelier.com</b> (self-host Hetzner + Caddy/Let's Encrypt, HTTPS). Sin topes de workflows/ejecuciones. <b>25 workflows</b> importados.<br><b>⚠️ Credenciales:</b> la migración a Hetzner dejó los nodos apuntando a credenciales viejas (por eso fallaban). Se están re-vinculando las 5 (Anthropic · Google Sheets · Google Drive · Gmail · Postgres/Supabase). Ya reconectados: <b>Generar Link API</b> y <b>Bandeja API</b> (Postgres responde OK). Supabase está activa (Healthy).</div>
     <div class="lnk" style="margin:10px 0">
       <a href="https://n8n.bloomlichtatelier.com" target="_blank">Abrir n8n <span>→</span></a>
       <a href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Ver los 25 workflows <span>→</span></a>
@@ -301,12 +301,44 @@ flowchart LR
       .fstep .go{flex:0 0 auto;background:var(--gold);color:#20201d;font-weight:700;font-size:12.5px;text-decoration:none;padding:9px 14px;border-radius:9px;white-space:nowrap}
       .fstep .go:hover{background:#9d551a;color:#fff}
       .arrow{align-self:center;color:var(--gold);font-size:20px;line-height:1;margin:4px 0}
+      .qsend{background:linear-gradient(135deg,#20201d,#33302a);color:var(--linen);border:1px solid var(--gold);border-radius:14px;padding:16px 18px;margin:0 0 16px}
+      .qsend .qh{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+      .qsend h4{font-size:16px;margin:4px 0 4px}
+      .qsend .qd{font-size:12px;color:#d8d2c4;margin:0 0 8px}
+      .qsend label{display:block;font-size:11px;color:#d8d2c4;margin:8px 0 3px;text-transform:uppercase;letter-spacing:.04em}
+      .qsend input{width:100%;padding:9px 11px;border:1px solid #4a463d;border-radius:9px;background:#fffdf9;color:#20201d;font-size:14px}
+      .qsend .qmsg{background:#fffdf9;color:#3d3a34;border-radius:9px;padding:10px 12px;font-size:12.5px;margin:10px 0;line-height:1.5}
+      .qsend .qbtns{display:flex;gap:8px;flex-wrap:wrap}
+      .qsend .qbtns>*{flex:1;min-width:110px;text-align:center;padding:11px;border-radius:9px;font-weight:700;font-size:13px;cursor:pointer;border:none;text-decoration:none;display:inline-block}
+      .qsend .b-copy{background:var(--gold);color:#20201d}
+      .qsend .b-wa{background:#25D366;color:#fff}
+      .qsend .b-mail{background:#eae1d1;color:#20201d}
+      .qsend .b-open{background:#fff;color:#20201d;border:1px solid var(--gold)}
     </style>
+
+    <div class="qsend">
+      <div class="qh">Paso 1 · para el cliente</div>
+      <h4>📋 Enviar el cuestionario</h4>
+      <p class="qd">Lo primero que le mandas al cliente. Llena lo que tengas y usa un botón.</p>
+      <label>Nombre del cliente (opcional)</label>
+      <input id="q-nom" placeholder="Ej. Oscar" />
+      <label>WhatsApp (10 dígitos, opcional)</label>
+      <input id="q-wa" inputmode="numeric" placeholder="Ej. 3312345678" />
+      <label>Correo (opcional)</label>
+      <input id="q-mail" type="email" placeholder="cliente@correo.com" />
+      <div class="qmsg" id="q-prev"></div>
+      <div class="qbtns">
+        <button class="b-copy" id="q-copy">Copiar mensaje</button>
+        <a class="b-wa" id="q-wabtn" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="b-mail" id="q-mailbtn">Correo</a>
+        <a class="b-open" href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank" rel="noopener">Abrir</a>
+      </div>
+    </div>
 
     <div class="note" style="margin-top:0"><b>🧰 Tus herramientas</b> — un clic y se abre. Abajo, el <b>paso a paso</b> de un proyecto.</div>
     <div class="tools">
       <a class="tool" href="https://panel.bloomlichtatelier.com" target="_blank"><span class="ic">📊</span><b>Panel</b><small>ver todo</small></a>
-      <a class="tool" href="https://validacion.bloomlichtatelier.com" target="_blank"><span class="ic">📋</span><b>Cuestionario</b><small>brief cliente</small></a>
+      <a class="tool" href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank"><span class="ic">📋</span><b>Cuestionario</b><small>brief cliente</small></a>
       <a class="tool" href="https://drive.google.com/drive/folders/1Y5D8V8_e17lxv85jpnyykWZNSOQOD1we" target="_blank"><span class="ic">🗂️</span><b>Proyectos</b><small>briefs de clientes (Drive)</small></a>
       <a class="tool" href="generador.html" target="_blank"><span class="ic">✅</span><b>Link cliente</b><small>confirmar brief</small></a>
       <a class="tool" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank"><span class="ic">🤖</span><b>n8n</b><small>análisis</small></a>
@@ -316,7 +348,7 @@ flowchart LR
 
     <h3 style="font-size:13px;color:var(--charcoal);margin:16px 0 8px">🪜 Paso a paso de un proyecto (orden real del sistema)</h3>
     <div class="flow">
-      <div class="fstep"><div class="num">1</div><span class="emj">📋</span><div class="txt"><b>Cuestionario</b><p>El cliente contesta el brief conversacional (código del proyecto: PROY-A).</p></div><a class="go" href="https://validacion.bloomlichtatelier.com" target="_blank">Abrir</a></div>
+      <div class="fstep"><div class="num">1</div><span class="emj">📋</span><div class="txt"><b>Cuestionario</b><p>El cliente contesta el brief conversacional. (Es <b>formulario.html</b>, no el validador de tokens.)</p></div><a class="go" href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank">Abrir</a></div>
       <div class="arrow">▼</div>
       <div class="fstep"><div class="num">2</div><span class="emj">📄</span><div class="txt"><b>Se genera el brief + arquetipo</b><p>Se crea el brief y se <b>guarda en Drive</b> (junto con logos y fotos).</p></div><a class="go" href="https://drive.google.com/drive/folders/1Y5D8V8_e17lxv85jpnyykWZNSOQOD1we" target="_blank">Abrir proyectos</a></div>
       <div class="arrow">▼</div>
@@ -348,6 +380,28 @@ flowchart LR
   function bars(p){p.querySelectorAll('.bar>i').forEach(b=>{b.style.width='0';setTimeout(()=>b.style.width=b.dataset.w,60)})}
   tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('on'));t.classList.add('on');panels.forEach(p=>p.classList.remove('on'));const el=document.getElementById(t.dataset.t);el.classList.add('on');bars(el)}));
   bars(document.getElementById('resumen'));
+  // ===== Paso 1: enviar cuestionario =====
+  (function(){
+    const LINK="https://validacion.bloomlichtatelier.com/formulario.html";
+    const nom=document.getElementById('q-nom'), wa=document.getElementById('q-wa'), mail=document.getElementById('q-mail');
+    const prev=document.getElementById('q-prev'), copy=document.getElementById('q-copy'), wabtn=document.getElementById('q-wabtn'), mailbtn=document.getElementById('q-mailbtn');
+    if(!prev) return;
+    function msg(){
+      const n=(nom.value||"").trim();
+      return "Hola"+(n?(" "+n):"")+", para arrancar tu proyecto de marca con Bloomlicht contesta este cuestionario rápido (5-10 min): "+LINK+" . Cuando lo termines, seguimos. ¡Gracias!";
+    }
+    function waNum(v){let d=(v||"").replace(/\D/g,"");if(!d)return"";if(d.length===10)d="52"+d;else if(d.indexOf("52")!==0)d="52"+d;return d;}
+    function upd(){
+      const m=msg(); prev.textContent=m;
+      const num=waNum(wa.value);
+      wabtn.href="https://wa.me/"+(num||"")+"?text="+encodeURIComponent(m);
+      wabtn.style.opacity=num?1:.6;
+      mailbtn.href="mailto:"+(mail.value||"").trim()+"?subject="+encodeURIComponent("Tu cuestionario de marca · Bloomlicht")+"&body="+encodeURIComponent(m);
+    }
+    [nom,wa,mail].forEach(el=>el.addEventListener('input',upd));
+    copy.addEventListener('click',()=>navigator.clipboard.writeText(msg()).then(()=>{copy.textContent="Copiado ✓";setTimeout(()=>copy.textContent="Copiar mensaje",1500);}));
+    upd();
+  })();
   // ===== Bitácora en vivo =====
   // Para que se actualice SOLO: pega aquí el enlace CSV publicado de la Google Sheet
   // (en la hoja: Archivo → Compartir → Publicar en la Web → Valores separados por comas (.csv) → Publicar).
