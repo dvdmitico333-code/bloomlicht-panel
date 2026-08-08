@@ -147,6 +147,11 @@
     const s = ((marca||"")+" "+(resp||"")).toLowerCase();
     return s.includes("prueba") || s.includes("ignorar");
   }
+  // Copias / entradas rotas: nombres combinados tipo "1- ... y 2- ..." o que empiezan con "N- ".
+  function esCopia(marca){
+    const m = (marca||"").trim();
+    return /^\s*\d+\s*[-–]/.test(m) || /\by\s*\d+\s*[-–]/i.test(m);
+  }
 
   async function cargarClientes(){
     try{
@@ -162,6 +167,7 @@
         const id=(r[0]||"").trim(), marca=(r[1]||"").trim(), resp=(r[2]||"").trim();
         if(!marca) return;
         if(esPrueba(marca,resp)) return;
+        if(esCopia(marca)) return;
         // dedup POR MARCA (una sola entrada por proyecto, la más reciente)
         const key = marca.toLowerCase().replace(/\s+/g,' ').trim();
         if(seen.has(key)) return;
