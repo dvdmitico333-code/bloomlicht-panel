@@ -58,9 +58,38 @@
   footer{margin-top:22px;font-size:11px;color:#9a8f78;text-align:center}
   @keyframes fade{from{opacity:0}to{opacity:1}}@keyframes drop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
   @keyframes rise{to{opacity:1;transform:none}}@keyframes slide{to{opacity:1;transform:none}}
+  /* Iconografía de marca (línea fina, en vez de emojis) */
+  .ic-svg{width:1em;height:1em;display:inline-block;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .tool .ic{color:var(--gold-d)} .fstep .emj{color:var(--gold-d);display:inline-flex;align-items:center}
+  .cat .ic-svg{width:13px;height:13px;vertical-align:-2px;margin-right:6px;color:var(--gold-d)}
+  .cat .ic-live{color:var(--green)}
+  h3 .ic-svg,h4 .ic-svg,.note .ic-svg{color:var(--gold-d);vertical-align:-.16em;margin-right:5px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ic-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.3"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.3"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.3"/></symbol>
+<symbol id="ic-clipboard" viewBox="0 0 24 24"><rect x="5" y="4.5" width="14" height="16" rx="2"/><path d="M9 4.5a3 3 0 0 1 6 0"/><path d="M8.5 11h7M8.5 15h5"/></symbol>
+<symbol id="ic-folder" viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2-2h3.2l1.8 2H18a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="ic-link" viewBox="0 0 24 24"><path d="M9.5 14.5l5-5"/><path d="M8 12l-2 2a3.2 3.2 0 0 0 4.5 4.5l2-2"/><path d="M16 12l2-2a3.2 3.2 0 0 0-4.5-4.5l-2 2"/></symbol>
+<symbol id="ic-flow" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.3"/><circle cx="6" cy="18" r="2.3"/><circle cx="18" cy="12" r="2.3"/><path d="M8.3 6H12a3.7 3.7 0 0 1 3.7 3.7v.3M8.3 18H12a3.7 3.7 0 0 0 3.7-3.7v-.3"/></symbol>
+<symbol id="ic-tag" viewBox="0 0 24 24"><path d="M4 12.5V5.5a1.5 1.5 0 0 1 1.5-1.5h7l7 7-7.5 7.5z"/><circle cx="8.3" cy="8.3" r="1.1"/></symbol>
+<symbol id="ic-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 7l8 6 8-6"/></symbol>
+<symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.7" fill="currentColor" stroke="none"/></symbol>
+<symbol id="ic-compare" viewBox="0 0 24 24"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></symbol>
+<symbol id="ic-doc" viewBox="0 0 24 24"><path d="M7 3.5h7l4 4V20a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 20V5A1.5 1.5 0 0 1 7 3.5z"/><path d="M13.5 3.7V8h4.3M9 12h6M9 15.5h6"/></symbol>
+<symbol id="ic-type" viewBox="0 0 24 24"><path d="M6 6.5h12M12 6.5V18M9.5 18h5"/></symbol>
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M15.5 15.5L20 20"/></symbol>
+<symbol id="ic-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12.2l2.4 2.4 4.6-4.9"/></symbol>
+<symbol id="ic-palette" viewBox="0 0 24 24"><path d="M12 4a8 8 0 0 0 0 16 2 2 0 0 0 2-2c0-1.2 1-1.8 2-1.8h1a3 3 0 0 0 3-3 7.2 7.2 0 0 0-8-7.2z"/><circle cx="8.5" cy="11" r="1"/><circle cx="12" cy="8.2" r="1"/><circle cx="15.5" cy="11" r="1"/></symbol>
+<symbol id="ic-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.6v2.1M12 18.3v2.1M20.4 12h-2.1M5.7 12H3.6M17.9 6.1l-1.5 1.5M7.6 16.4L6.1 17.9M17.9 17.9l-1.5-1.5M7.6 7.6L6.1 6.1"/></symbol>
+<symbol id="ic-spark" viewBox="0 0 24 24"><path d="M12 3.5c.6 4.4 1.6 5.4 6 6-4.4.6-5.4 1.6-6 6-.6-4.4-1.6-5.4-6-6 4.4-.6 5.4-1.6 6-6z"/></symbol>
+<symbol id="ic-archive" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="4" rx="1"/><path d="M5 8.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19V8.5"/><path d="M10 12h4"/></symbol>
+<symbol id="ic-wrench" viewBox="0 0 24 24"><path d="M15.5 4.6a4.5 4.5 0 0 0-5.9 5.7l-5 5a1.8 1.8 0 0 0 2.5 2.5l5-5a4.5 4.5 0 0 0 5.7-5.9l-2.6 2.6-2.1-2.1z"/></symbol>
+<symbol id="ic-steps" viewBox="0 0 24 24"><path d="M4 19h4v-4h4v-4h4V7h4"/></symbol>
+<symbol id="ic-alert" viewBox="0 0 24 24"><path d="M12 4.5l8.5 15h-17z"/><path d="M12 10v4M12 16.6v.2"/></symbol>
+<symbol id="ic-send" viewBox="0 0 24 24"><path d="M20 4L3.5 11l6.5 2.2M20 4l-7 16-2.9-6.5M20 4L10 13.5"/></symbol>
+</defs></svg>
 <div class="wrap">
   <header>
     <h1>BLOOMLICHT</h1>
@@ -78,8 +107,8 @@
     <div class="tab" data-t="estructura">Estructura</div>
     <div class="tab" data-t="ecosistema">Ecosistema</div>
     <div class="tab" data-t="n8n">Rescate n8n</div>
-    <div class="tab" data-t="flujo">🔗 Flujo</div>
-    <div class="tab" data-t="bitacora">🗒️ Bitácora</div>
+    <div class="tab" data-t="flujo">Flujo</div>
+    <div class="tab" data-t="bitacora">Bitácora</div>
   </div>
 
   <section class="panel on" id="resumen">
@@ -100,7 +129,7 @@
 
   <section class="panel" id="frentes">
     <div class="grid">
-      <div class="card"><h3>Hub v20 + Manual <span class="chip cg">Listo</span></h3><p>41 servicios, gobernanza, pipeline, rúbrica, kit.</p><div class="bar"><i class="fill-g" data-w="95%"></i></div></div>
+      <div class="card"><h3>Hub v25 + Manual <span class="chip cg">Listo</span></h3><p>41 servicios, gobernanza, pipeline, rúbrica, kit.</p><div class="bar"><i class="fill-g" data-w="95%"></i></div></div>
       <div class="card"><h3>Framework / método <span class="chip cg">Listo</span></h3><p>Fases 1-3 + SIM (85 activos).</p><div class="bar"><i class="fill-g" data-w="90%"></i></div></div>
       <div class="card"><h3>Activos visuales <span class="chip ca">Parcial</span></h3><p>Solo monograma; falta logotipo principal.</p><div class="bar"><i class="fill-a" data-w="40%"></i></div></div>
       <div class="card"><h3>Oferta / precios <span class="chip ca">En curso</span></h3><p>Servicios mapeados; falta precio (ver Precios).</p><div class="bar"><i class="fill-a" data-w="45%"></i></div></div>
@@ -127,38 +156,40 @@
     <div class="step"><div class="n">4</div><div class="b"><h5>Análisis profundo · 6 lentes <span class="chip ca">Método listo</span></h5><p>Psico, marketing, diseño, redes, auditor, financiera + emulación humana. Competencia real vs declarada.</p></div></div>
     <div class="step"><div class="n">5</div><div class="b"><h5>Prompts de logo <span class="chip ca">Método listo</span></h5><p>Prompts profesionales, no genéricos → generador OpenAI.</p></div></div>
     <div class="step"><div class="n">6</div><div class="b"><h5>Kit de logos / imagen <span class="chip cr">Por construir</span></h5><p>Vectoriza y arma kit multiformato reutilizable.</p></div></div>
-    <div class="note">➜ La salida cliente-facing de los pasos 1-4 es el <b>Diagnóstico 1.1</b> (servicio, por Paola): veredicto + plan de prioridades. Hoy se corre a mano; falta conectarlo a n8n.</div>
+    <div class="note">→ La salida cliente-facing de los pasos 1-4 es el <b>Diagnóstico 1.1</b> (servicio, por Paola): veredicto + plan de prioridades. Hoy se corre a mano; falta conectarlo a n8n.</div>
   </section>
 
   <section class="panel" id="construido">
     <div class="lnk">
-      <div class="cat">🟢 En vivo · dominio propio</div>
+      <div class="cat"><svg class="ic-svg ic-live"><use href="#ic-check"/></svg>En vivo · dominio propio</div>
       <a href="https://n8n.bloomlichtatelier.com" target="_blank">n8n · motor de automatización (HTTPS) <span>→</span></a>
       <a href="https://validacion.bloomlichtatelier.com" target="_blank">Validación de brief (cliente) <span>→</span></a>
       <a href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank">Formulario / entrevista de brief <span>→</span></a>
       <a href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank">Cotizador <span>→</span></a>
-      <a href="generador.html" target="_blank"><b>⭐ Generador de links por proyecto (manual)</b> — escribe el proyecto y copia el link <span>→</span></a>
+      <a href="https://validacion.bloomlichtatelier.com/estudio_mercado" target="_blank"><b>Estudio de mercado</b> — lo que pide / necesita / real <span>→</span></a>
+      <a href="https://validacion.bloomlichtatelier.com/competencia" target="_blank"><b>Análisis de competencia</b> — identidad, modelo y comunicación <span>→</span></a>
+      <a href="generador.html" target="_blank"><b>Generador de links por proyecto (manual)</b> — escribe el proyecto y copia el link <span>→</span></a>
       <div class="note" style="margin:2px 0 6px">Herramienta manual: pon el nombre del proyecto → <b>Generar</b> → <b>Copiar</b> el link con token → envíalo al cliente. No necesita n8n.</div>
-      <div class="cat">🗂️ Carpetas de Drive</div>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-folder"/></svg>Carpetas de Drive</div>
       <a href="https://drive.google.com/drive/folders/1lJZfULE6xBVF6uw1A4mZ_vdWX5GZ_b-8" target="_blank">Vault Compartido (memoria David + Paola) <span>→</span></a>
       <a href="https://drive.google.com/drive/folders/1Y5D8V8_e17lxv85jpnyykWZNSOQOD1we" target="_blank">Briefs Bloomlicht <span>→</span></a>
       <a href="https://drive.google.com/drive/folders/1Pa2_8sR5x7Lmfb7HJTnpeBzmat7-JUXJ" target="_blank">Registro CRM Bloomlicht <span>→</span></a>
       <a href="https://drive.google.com/drive/folders/12d2Gxr5xJh8KctQThmoH-4v6cy9Tt3sY" target="_blank">Referencia <span>→</span></a>
       <a href="https://drive.google.com/drive/folders/1ZAnE1S8BNzCOtJRlSxkEEJ79SoI0QXL6" target="_blank">Guardados de Chrome <span>→</span></a>
-      <div class="cat">⚙️ Automatizaciones n8n (25 workflows)</div>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-flow"/></svg>Automatizaciones n8n (25 workflows)</div>
       <a href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Ver todos los workflows <span>→</span></a>
       <div class="note" style="margin:2px 0 6px">Incluye: <b>Intake Fase 3</b> (recibe el brief/entrevista, 70 nodos) · <b>Generar Link de Validación</b> (el generador de tokens) · Validación Full V5 · Cierre V3 · <b>Competencia V4</b> · <b>Clasificador de logo (visión)</b> · Ingesta Consumidor · Backfill a Supabase.</div>
-      <div class="cat">🧠 Herramientas y método (docs)</div>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-spark"/></svg>Herramientas y método (docs)</div>
       <a href="Actualizado/08_Herramientas_Nuevas/Motor_Analisis_Profundo_Brief_6_Lentes.md" target="_blank">Motor de Análisis · 6 lentes <span>→</span></a>
       <a href="Actualizado/08_Herramientas_Nuevas/Motor_Prompts_Diseno_Logo.md" target="_blank">Motor de Prompts de Logo <span>→</span></a>
       <a href="Actualizado/07_Diagnostico_Paola/LEEME.pdf" target="_blank">Diagnóstico 1.1 (Paola) <span>→</span></a>
       <a href="Actualizado/08_Herramientas_Nuevas/Plan_Construccion_Herramientas.md" target="_blank">Plan de Construcción <span>→</span></a>
       <a href="Actualizado/08_Herramientas_Nuevas/n8n_selfhost/00_Decision_y_Runbook_n8n.md" target="_blank">Runbook / infra n8n <span>→</span></a>
-      <div class="cat">🎨 Marca y empresa</div>
-      <a href="Actualizado/01_Brand_Hub_v20/00_manual/Bloomlicht_Manual_Identidad_Visual_v2.pdf" target="_blank">Manual de Identidad v2 (PDF) <span>→</span></a>
-      <a href="Actualizado/02_Empresa_v7/Roadmap_Bloomlicht.docx" target="_blank">Roadmap Bloomlicht <span>→</span></a>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-palette"/></svg>Marca y empresa</div>
+      <a href="Actualizado/01_Brand_Hub_v25/00_manual/Bloomlicht_Manual_Identidad_Visual_v3.pdf" target="_blank">Manual de Identidad v3 (PDF) <span>→</span></a>
+      <a href="Actualizado/02_Empresa_v9/Roadmap_Bloomlicht.docx" target="_blank">Roadmap Bloomlicht <span>→</span></a>
       <a href="Roadmap_y_Estructura_Bloomlicht.html" target="_blank">Roadmap y estructura (visual) <span>→</span></a>
-      <div class="cat">🗄️ Internas (locales, aún no publicadas)</div>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-archive"/></svg>Internas (locales, aún no publicadas)</div>
       <a href="Web%20y%20Sistemas/Bloomlicht_Pipeline_CRM_v1.html" target="_blank">Pipeline CRM <span>→</span></a>
       <a href="Web%20y%20Sistemas/bandeja_bloomlicht.html" target="_blank">Bandeja <span>→</span></a>
       <a href="Web%20y%20Sistemas/asistente_negocios.html" target="_blank">Asistente de negocios <span>→</span></a>
@@ -249,7 +280,7 @@ flowchart LR
     PL["Prompts de logo"]:::method --> OAI["Generador OpenAI"]:::todo --> KIT["Kit de logos / vector"]:::todo
   end
   subgraph P["4 · Marca viva"]
-    HUB["Brand Hub v20"]:::base --> PIPE["Pipeline IA + rúbrica"]:::wip
+    HUB["Brand Hub v25"]:::base --> PIPE["Pipeline IA + rúbrica"]:::wip
   end
   VAL --> L6
   ICP --> DIAG["Diagnóstico 1.1 · veredicto + plan (Paola)"]:::base
@@ -273,7 +304,7 @@ flowchart LR
   </section>
 
   <section class="panel" id="n8n">
-    <div class="note" style="border-color:#a9d3b4;background:#eef7f0;margin-top:0"><b>✅ n8n EN VIVO:</b> corriendo en <b>https://n8n.bloomlichtatelier.com</b> (self-host Hetzner + Caddy/Let's Encrypt, HTTPS). Sin topes de workflows/ejecuciones. <b>25 workflows</b> importados.<br><b>⚠️ Credenciales:</b> la migración a Hetzner dejó los nodos apuntando a credenciales viejas (por eso fallaban). Se están re-vinculando las 5 (Anthropic · Google Sheets · Google Drive · Gmail · Postgres/Supabase). Ya reconectados: <b>Generar Link API</b> y <b>Bandeja API</b> (Postgres responde OK). Supabase está activa (Healthy).</div>
+    <div class="note" style="border-color:#a9d3b4;background:#eef7f0;margin-top:0"><b><svg class="ic-svg ic-live"><use href="#ic-check"/></svg> n8n EN VIVO:</b> corriendo en <b>https://n8n.bloomlichtatelier.com</b> (self-host Hetzner + Caddy/Let's Encrypt, HTTPS). Sin topes de workflows/ejecuciones. <b>25 workflows</b> importados.<br><b><svg class="ic-svg" style="color:var(--amber)"><use href="#ic-alert"/></svg> Credenciales:</b> la migración a Hetzner dejó los nodos apuntando a credenciales viejas (por eso fallaban). Se están re-vinculando las 5 (Anthropic · Google Sheets · Google Drive · Gmail · Postgres/Supabase). Ya reconectados: <b>Generar Link API</b> y <b>Bandeja API</b> (Postgres responde OK). Supabase está activa (Healthy).</div>
     <div class="lnk" style="margin:10px 0">
       <a href="https://n8n.bloomlichtatelier.com" target="_blank">Abrir n8n <span>→</span></a>
       <a href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Ver los 25 workflows <span>→</span></a>
@@ -318,7 +349,7 @@ flowchart LR
 
     <div class="qsend">
       <div class="qh">Paso 1 · para el cliente</div>
-      <h4>📋 Enviar el cuestionario</h4>
+      <h4><svg class="ic-svg" style="color:var(--gold)"><use href="#ic-send"/></svg> Enviar el cuestionario</h4>
       <p class="qd">Lo primero que le mandas al cliente. Llena lo que tengas y usa un botón.</p>
       <label>Nombre del cliente (opcional)</label>
       <input id="q-nom" placeholder="Ej. Oscar" />
@@ -335,34 +366,36 @@ flowchart LR
       </div>
     </div>
 
-    <div class="note" style="margin-top:0"><b>🧰 Tus herramientas</b> — un clic y se abre. Abajo, el <b>paso a paso</b> de un proyecto.</div>
+    <div class="note" style="margin-top:0"><b><svg class="ic-svg"><use href="#ic-wrench"/></svg>Tus herramientas</b> — un clic y se abre. Abajo, el <b>paso a paso</b> de un proyecto.</div>
     <div class="tools">
-      <a class="tool" href="https://panel.bloomlichtatelier.com" target="_blank"><span class="ic">📊</span><b>Panel</b><small>ver todo</small></a>
-      <a class="tool" href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank"><span class="ic">📋</span><b>Cuestionario</b><small>brief cliente</small></a>
-      <a class="tool" href="https://drive.google.com/drive/folders/1Y5D8V8_e17lxv85jpnyykWZNSOQOD1we" target="_blank"><span class="ic">🗂️</span><b>Proyectos</b><small>briefs de clientes (Drive)</small></a>
-      <a class="tool" href="generador.html" target="_blank"><span class="ic">✅</span><b>Link cliente</b><small>confirmar brief</small></a>
-      <a class="tool" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank"><span class="ic">🤖</span><b>n8n</b><small>análisis</small></a>
-      <a class="tool" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank"><span class="ic">💲</span><b>Cotizador</b><small>precios</small></a>
-      <a class="tool" href="https://mail.zoho.com" target="_blank"><span class="ic">✉️</span><b>Correo</b><small>Zoho</small></a>
+      <a class="tool" href="https://panel.bloomlichtatelier.com" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-grid"/></svg></span><b>Panel</b><small>ver todo</small></a>
+      <a class="tool" href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-clipboard"/></svg></span><b>Cuestionario</b><small>brief cliente</small></a>
+      <a class="tool" href="https://drive.google.com/drive/folders/1Y5D8V8_e17lxv85jpnyykWZNSOQOD1we" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-folder"/></svg></span><b>Proyectos</b><small>briefs de clientes (Drive)</small></a>
+      <a class="tool" href="generador.html" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-link"/></svg></span><b>Link cliente</b><small>confirmar brief</small></a>
+      <a class="tool" href="https://validacion.bloomlichtatelier.com/estudio_mercado" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-target"/></svg></span><b>Estudio de mercado</b><small>pide / necesita / real</small></a>
+      <a class="tool" href="https://validacion.bloomlichtatelier.com/competencia" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-compare"/></svg></span><b>Competencia</b><small>análisis profundo</small></a>
+      <a class="tool" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-flow"/></svg></span><b>n8n</b><small>análisis</small></a>
+      <a class="tool" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-tag"/></svg></span><b>Cotizador</b><small>precios</small></a>
+      <a class="tool" href="https://mail.zoho.com" target="_blank"><span class="ic"><svg class="ic-svg"><use href="#ic-mail"/></svg></span><b>Correo</b><small>Zoho</small></a>
     </div>
 
-    <h3 style="font-size:13px;color:var(--charcoal);margin:16px 0 8px">🪜 Paso a paso de un proyecto (orden real del sistema)</h3>
+    <h3 style="font-size:13px;color:var(--charcoal);margin:16px 0 8px"><svg class="ic-svg"><use href="#ic-steps"/></svg>Paso a paso de un proyecto (orden real del sistema)</h3>
     <div class="flow">
-      <div class="fstep"><div class="num">1</div><span class="emj">📋</span><div class="txt"><b>Cuestionario</b><p>El cliente contesta el brief conversacional. (Es <b>formulario.html</b>, no el validador de tokens.)</p></div><a class="go" href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank">Abrir</a></div>
+      <div class="fstep"><div class="num">1</div><span class="emj"><svg class="ic-svg"><use href="#ic-clipboard"/></svg></span><div class="txt"><b>Cuestionario</b><p>El cliente contesta el brief conversacional. (Es <b>formulario.html</b>, no el validador de tokens.)</p></div><a class="go" href="https://validacion.bloomlichtatelier.com/formulario.html" target="_blank">Abrir</a></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">2</div><span class="emj">📄</span><div class="txt"><b>Se genera el brief + arquetipo</b><p>Se crea el brief y se <b>guarda en Drive</b> (junto con logos y fotos).</p></div><a class="go" href="https://drive.google.com/drive/folders/1Y5D8V8_e17lxv85jpnyykWZNSOQOD1we" target="_blank">Abrir proyectos</a></div>
+      <div class="fstep"><div class="num">2</div><span class="emj"><svg class="ic-svg"><use href="#ic-doc"/></svg></span><div class="txt"><b>Se genera el brief + arquetipo</b><p>Se crea el brief y se <b>guarda en Drive</b> (junto con logos y fotos).</p></div><a class="go" href="https://drive.google.com/drive/folders/1Y5D8V8_e17lxv85jpnyykWZNSOQOD1we" target="_blank">Abrir proyectos</a></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">3</div><span class="emj">🔤</span><div class="txt"><b>Naming</b><p>Propuestas de nombre con criterio (arquetipo + framework).</p></div></div>
+      <div class="fstep"><div class="num">3</div><span class="emj"><svg class="ic-svg"><use href="#ic-type"/></svg></span><div class="txt"><b>Naming</b><p>Propuestas de nombre con criterio (arquetipo + framework).</p></div></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">4</div><span class="emj">🔎</span><div class="txt"><b>Revisión del brief</b><p>Revisamos y corregimos el brief internamente.</p></div></div>
+      <div class="fstep"><div class="num">4</div><span class="emj"><svg class="ic-svg"><use href="#ic-search"/></svg></span><div class="txt"><b>Revisión del brief</b><p>Revisamos y corregimos el brief internamente.</p></div></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">5</div><span class="emj">✅</span><div class="txt"><b>Confirmación del cliente (link manual)</b><p>Le enviamos el link para que <b>confirme las revisiones</b> del brief y suba logos/archivos.</p></div><a class="go" href="generador.html" target="_blank">Generar link</a></div>
+      <div class="fstep"><div class="num">5</div><span class="emj"><svg class="ic-svg"><use href="#ic-check"/></svg></span><div class="txt"><b>Confirmación del cliente (link manual)</b><p>Le enviamos el link para que <b>confirme las revisiones</b> del brief y suba logos/archivos.</p></div><a class="go" href="generador.html" target="_blank">Generar link</a></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">6</div><span class="emj">🤖</span><div class="txt"><b>Análisis profundo</b><p>ICP, competencia, mercado y precios (n8n).</p></div><a class="go" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Abrir n8n</a></div>
+      <div class="fstep"><div class="num">6</div><span class="emj"><svg class="ic-svg"><use href="#ic-flow"/></svg></span><div class="txt"><b>Análisis profundo</b><p>ICP, competencia, mercado y precios (n8n).</p></div><a class="go" href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Abrir n8n</a></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">7</div><span class="emj">🎨</span><div class="txt"><b>Kit de logos / imagen</b><p>Vectoriza y arma el kit multiformato (proyecto Vectorizador).</p></div></div>
+      <div class="fstep"><div class="num">7</div><span class="emj"><svg class="ic-svg"><use href="#ic-palette"/></svg></span><div class="txt"><b>Kit de logos / imagen</b><p>Vectoriza y arma el kit multiformato (proyecto Vectorizador).</p></div></div>
       <div class="arrow">▼</div>
-      <div class="fstep"><div class="num">8</div><span class="emj">💲</span><div class="txt"><b>Cotización y propuesta</b><p>Cotizador → propuesta por correo → anota el avance en la bitácora.</p></div><a class="go" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank">Cotizador</a></div>
+      <div class="fstep"><div class="num">8</div><span class="emj"><svg class="ic-svg"><use href="#ic-tag"/></svg></span><div class="txt"><b>Cotización y propuesta</b><p>Cotizador → propuesta por correo → anota el avance en la bitácora.</p></div><a class="go" href="https://validacion.bloomlichtatelier.com/cotizador.html" target="_blank">Cotizador</a></div>
     </div>
     <div class="note" style="margin-top:12px">Naming (3) y Kit de logos (7) están <b>por construir</b>. Detalle "para dummies" en el <b>Manual de Operación Bloomlicht</b>.</div>
   </section>
