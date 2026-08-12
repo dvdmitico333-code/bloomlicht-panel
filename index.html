@@ -512,11 +512,19 @@ flowchart LR
       }).reverse();
     }
     function fallback(){box.innerHTML='<div class="note">La bitácora en vivo aparece al conectar la Google Sheet. Mientras, el registro está en <b>Bitácora Compartida.md</b> (vault).</div>';meta.textContent='';}
-    if(SHEET_CSV_URL){
-      fetch(SHEET_CSV_URL+(SHEET_CSV_URL.includes('?')?'&':'?')+'_='+Date.now()).then(r=>r.text()).then(t=>render(parseCSV(t))).catch(fallback);
-    }else{
-      fetch('avances.json?_='+Date.now()).then(r=>r.json()).then(d=>render(d.items||[])).catch(fallback);
-    }
+    // Muestra TODO junto: la Google Sheet (David/Paola) + avances.json (registro automático de Claude).
+    const pSheet = SHEET_CSV_URL
+      ? fetch(SHEET_CSV_URL+(SHEET_CSV_URL.includes('?')?'&':'?')+'_='+Date.now()).then(r=>r.text()).then(parseCSV).catch(()=>[])
+      : Promise.resolve([]);
+    const pJson = fetch('avances.json?_='+Date.now()).then(r=>r.json()).then(d=>d.items||[]).catch(()=>[]);
+    Promise.allSettled([pSheet,pJson]).then(res=>{
+      const a = res[0].status==='fulfilled' ? (res[0].value||[]) : [];
+      const b = res[1].status==='fulfilled' ? (res[1].value||[]) : [];
+      const seen=new Set(), all=[];
+      [...a,...b].forEach(it=>{ const k=(it.fecha||'')+'|'+(it.quien||'')+'|'+String(it.texto||'').slice(0,50); if(!seen.has(k)){ seen.add(k); all.push(it); } });
+      all.sort((x,y)=>String(y.fecha||'').localeCompare(String(x.fecha||'')));
+      if(!all.length){ fallback(); } else { render(all); }
+    }).catch(fallback);
   })();
   if(window.mermaid){mermaid.initialize({
     startOnLoad:true, securityLevel:'loose', theme:'base',

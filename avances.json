@@ -1,6 +1,31 @@
 {
-  "publicado": "2026-08-06 13:45",
+  "publicado": "2026-08-12 10:00",
   "items": [
+    {
+      "fecha": "2026-08-12",
+      "quien": "C",
+      "texto": "**Bitácora automática:** el panel ahora muestra TODO junto — la Google Sheet (David/Paola) + este registro automático de Claude. Y la publicación del panel quedó **automatizada** (Claude publica desde el equipo de David, sin subidas manuales)."
+    },
+    {
+      "fecha": "2026-08-12",
+      "quien": "C",
+      "texto": "Panel: nueva área **Editorial** en el organigrama (libros · revistas · revisiones · banners), **lista desplegable de pendientes** en Intake, y herramienta **Diagnóstico** agregada en Construido y Flujo."
+    },
+    {
+      "fecha": "2026-08-11",
+      "quien": "C",
+      "texto": "**Competencia (ejemplos de análisis profundo):** paleta de color extraída de la captura, precios, propuesta de valor, **redes** (perfil + seguidores + posts), matriz comparativa, mapa de posicionamiento y FODA. Capturas recortadas con 'Qué muestra / Análisis'."
+    },
+    {
+      "fecha": "2026-08-10",
+      "quien": "C",
+      "texto": "**Instrumento de documentos de marca (Word+PDF):** wordmark oficial (Bloomlicht + ATELIER), paleta oficial (Charcoal #1A1A1A · Linen #F5F4EF · Gold #C6A87B), fondo blanco. **Formateador** (microservicio) listo para el servidor."
+    },
+    {
+      "fecha": "2026-08-10",
+      "quien": "C",
+      "texto": "**Workflows con ruteo nuevo** (`00 Investigación` / `01 Entregables`) + 3 formatos (md · Word · PDF): **Estudio V2 · Competencia V6 · Cierre V4 · Diagnóstico V1** (nuevo) + página `diagnostico.html` con menú de proyectos."
+    },
     {
       "fecha": "2026-08-06",
       "quien": "C",
