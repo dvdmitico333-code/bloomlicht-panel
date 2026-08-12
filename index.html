@@ -453,7 +453,7 @@ flowchart LR
 <script>
   const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
   function bars(p){p.querySelectorAll('.bar>i').forEach(b=>{b.style.width='0';setTimeout(()=>b.style.width=b.dataset.w,60)})}
-  tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('on'));t.classList.add('on');panels.forEach(p=>p.classList.remove('on'));const el=document.getElementById(t.dataset.t);el.classList.add('on');bars(el)}));
+  tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('on'));t.classList.add('on');panels.forEach(p=>p.classList.remove('on'));const el=document.getElementById(t.dataset.t);el.classList.add('on');bars(el);renderMermaid(el);}));
   bars(document.getElementById('resumen'));
   // ===== Paso 1: enviar cuestionario =====
   (function(){
@@ -526,16 +526,25 @@ flowchart LR
       if(!all.length){ fallback(); } else { render(all); }
     }).catch(fallback);
   })();
-  if(window.mermaid){mermaid.initialize({
-    startOnLoad:true, securityLevel:'loose', theme:'base',
-    flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:52, padding:14, htmlLabels:true, useMaxWidth:true},
-    themeVariables:{
-      fontFamily:"'Montserrat',sans-serif", fontSize:'13px',
-      lineColor:'#b9a079', primaryColor:'#fffdf9', primaryTextColor:'#1a1a1a',
-      primaryBorderColor:'#c6a87b', clusterBkg:'#faf7f0', clusterBorder:'#e6dcc6',
-      edgeLabelBackground:'#f5f4ef', tertiaryColor:'#faf7f0'
-    }
-  });}
+  function renderMermaid(scope){
+    if(!window.mermaid) return;
+    var nodes = (scope||document).querySelectorAll('.mermaid:not([data-processed])');
+    if(nodes.length){ try{ window.mermaid.run({nodes:nodes}); }catch(e){ try{ window.mermaid.init(undefined,nodes); }catch(_){} } }
+  }
+  if(window.mermaid){
+    mermaid.initialize({
+      startOnLoad:false, securityLevel:'loose', theme:'base',
+      flowchart:{curve:'basis', nodeSpacing:44, rankSpacing:52, padding:14, htmlLabels:true, useMaxWidth:false},
+      themeVariables:{
+        fontFamily:"'Montserrat',sans-serif", fontSize:'13px',
+        lineColor:'#b9a079', primaryColor:'#fffdf9', primaryTextColor:'#1a1a1a',
+        primaryBorderColor:'#c6a87b', clusterBkg:'#faf7f0', clusterBorder:'#e6dcc6',
+        edgeLabelBackground:'#f5f4ef', tertiaryColor:'#faf7f0'
+      }
+    });
+    // dibuja el diagrama de la pestaña visible al abrir cada una (ya con ancho real)
+    setTimeout(function(){ renderMermaid(document.querySelector('.panel.on')||document); }, 80);
+  }
 </script>
 </body>
 </html>
