@@ -75,6 +75,13 @@
   .cat .ic-svg{width:13px;height:13px;vertical-align:-2px;margin-right:6px;color:var(--gold-d)}
   .cat .ic-live{color:var(--green)}
   h3 .ic-svg,h4 .ic-svg,.note .ic-svg{color:var(--gold-d);vertical-align:-.16em;margin-right:5px}
+  /* zoom/desplazamiento de diagramas */
+  .figure.zoomable .mermaid{height:460px;overflow:hidden;position:relative;cursor:grab;touch-action:none;border:1px dashed var(--line);border-radius:12px;background:#fffef9}
+  .figure.zoomable .mermaid.grabbing{cursor:grabbing}
+  .figure.zoomable .mermaid svg{transform-origin:0 0;max-width:none!important;width:auto!important}
+  .zoomctl{display:flex;gap:6px;justify-content:flex-end;margin:6px 4px 0}
+  .zoomctl button{border:1px solid var(--line);background:var(--paper);color:var(--charcoal);border-radius:8px;width:30px;height:28px;font-size:15px;cursor:pointer;font-family:inherit}
+  .zoomctl button:hover{border-color:var(--gold)}
   /* Figuras / diagramas de marca (que no se sientan cuadrados) */
   .figure{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:6px 10px 14px;margin:14px 0;box-shadow:0 8px 22px rgba(26,26,26,.06)}
   .figure .cap{display:flex;align-items:center;gap:8px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--charcoal);padding:11px 6px 9px;border-bottom:1.5px solid var(--gold);margin:0 2px 4px}
@@ -306,7 +313,7 @@ flowchart LR
   <section class="panel" id="ecosistema">
     <div class="note" style="margin-top:0">Flujo de todas las herramientas y automatizaciones de Bloomlicht: qué existe, qué falta y cómo se conecta con la metodología. n8n (self-host) es la capa que orquesta todo.</div>
     <div class="legend"><span><span class="dot" style="background:#cfe6d5"></span>Base lista</span><span><span class="dot" style="background:#d8e4f2"></span>Método listo</span><span><span class="dot" style="background:#f0e7d3"></span>Por construir</span><span><span class="dot" style="background:#f4d4d0"></span>Bloqueo</span></div>
-    <div class="figure"><div class="cap"><svg class="ic-svg"><use href="#ic-gear"/></svg>Ecosistema · cómo se conecta todo<span class="muted">n8n orquesta las 4 etapas</span></div>
+    <div class="figure zoomable"><div class="cap"><svg class="ic-svg"><use href="#ic-gear"/></svg>Ecosistema · cómo se conecta todo<span class="muted">rueda = zoom · arrastra = mover</span></div>
     <pre class="mermaid">
 flowchart LR
   CRM["CRM + Persona 1"]:::base --> BRF["Brief adaptativo"]:::base
@@ -526,10 +533,36 @@ flowchart LR
       if(!all.length){ fallback(); } else { render(all); }
     }).catch(fallback);
   })();
+  function enableZoom(container){
+    var svg = container.querySelector('svg');
+    if(!svg || svg.dataset.zoomed) return;
+    svg.dataset.zoomed='1';
+    var scale=1, tx=0, ty=0, drag=false, sx=0, sy=0;
+    function apply(){ svg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')'; }
+    container.addEventListener('wheel',function(e){
+      e.preventDefault();
+      var rect=container.getBoundingClientRect(), mx=e.clientX-rect.left, my=e.clientY-rect.top;
+      var f = e.deltaY<0 ? 1.12 : 1/1.12, ns=Math.min(5,Math.max(0.3, scale*f));
+      tx = mx-(mx-tx)*(ns/scale); ty = my-(my-ty)*(ns/scale); scale=ns; apply();
+    },{passive:false});
+    container.addEventListener('pointerdown',function(e){drag=true;sx=e.clientX-tx;sy=e.clientY-ty;container.classList.add('grabbing');try{container.setPointerCapture(e.pointerId);}catch(_){}} );
+    container.addEventListener('pointermove',function(e){if(!drag)return;tx=e.clientX-sx;ty=e.clientY-sy;apply();});
+    container.addEventListener('pointerup',function(){drag=false;container.classList.remove('grabbing');});
+    var ctl=document.createElement('div'); ctl.className='zoomctl';
+    ctl.innerHTML='<button data-z="in">+</button><button data-z="out">&minus;</button><button data-z="reset">&#10530;</button>';
+    container.parentNode.insertBefore(ctl, container.nextSibling);
+    ctl.addEventListener('click',function(e){
+      var z=e.target.getAttribute('data-z'); if(!z) return;
+      if(z==='reset'){scale=1;tx=0;ty=0;} else {var f=z==='in'?1.2:1/1.2; scale=Math.min(5,Math.max(0.3,scale*f));}
+      apply();
+    });
+    apply();
+  }
   function renderMermaid(scope){
     if(!window.mermaid) return;
     var nodes = (scope||document).querySelectorAll('.mermaid:not([data-processed])');
     if(nodes.length){ try{ window.mermaid.run({nodes:nodes}); }catch(e){ try{ window.mermaid.init(undefined,nodes); }catch(_){} } }
+    setTimeout(function(){ (scope||document).querySelectorAll('.figure.zoomable .mermaid').forEach(enableZoom); }, 500);
   }
   if(window.mermaid){
     mermaid.initialize({
