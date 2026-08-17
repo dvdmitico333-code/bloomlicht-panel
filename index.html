@@ -288,6 +288,7 @@ flowchart TD
   DG --> PA["Producción AV"]:::hire
   DG --> ED["Educación"]:::hire
   DG --> EV["Eventos"]:::hire
+  DG --> PG["Producción &amp; Gestión<br/>proveedores · permisos · patrocinios · logística"]:::hire
   DG --> TE["Tecnología"]:::live
   DG --> RI["Redes e Influencers"]:::hire
   DG --> EDI["Editorial<br/>libros · revistas · revisiones · banners"]:::hire
@@ -348,11 +349,34 @@ flowchart LR
   classDef todo fill:#f0e7d3,stroke:#c6a87b,color:#1a1a1a;
   classDef block fill:#f4d4d0,stroke:#c8524a,color:#1a1a1a;
     </pre></div>
+    <div class="figure zoomable"><div class="cap"><svg class="ic-svg"><use href="#ic-flow"/></svg>Intake · Router · 12 líneas <span class="muted">estado actual</span></div>
+    <pre class="mermaid">
+flowchart TD
+  Q["Cuestionario · 12 lineas<br/>clasifica · capta a fondo · enruta"]:::base --> R{"Router"}:::method
+  R --> M["Marca"]:::live
+  M --> EST["Estudio"]:::live --> CMP["Competencia"]:::live --> DG["Diagnostico 1.1 x 6 Lentes"]:::live
+  R --> NAM["Naming"]:::live
+  R --> COM["Comercial · plan de ventas"]:::live
+  COM --> DISC["Discovery a fondo · 13 modulos"]:::live
+  R -.pre-llenado.-> URL["Extraer+Inferir URL"]:::live
+  R --> ED["Editorial"]:::todo
+  R --> EV["Evento / experiencia"]:::todo
+  R --> AV["Audiovisual"]:::todo
+  R --> FV["Foto / video"]:::todo
+  R --> TC["Taller / curso"]:::todo
+  R --> WEB["Web / landing"]:::live
+  R --> EMP["Empaque / producto"]:::todo
+  R --> EX["Pieza expres"]:::todo
+  classDef base fill:#cfe6d5,stroke:#4a9e63,color:#1a1a1a;
+  classDef method fill:#d8e4f2,stroke:#7c8aa0,color:#1a1a1a;
+  classDef live fill:#cfe6d5,stroke:#4a9e63,color:#1a1a1a;
+  classDef todo fill:#f0e7d3,stroke:#c6a87b,color:#1a1a1a;
+    </pre></div>
     <div class="note">Alimenta las <b>6 líneas de servicio</b> (Agencia &amp; Branding, Producción AV, Educación, Eventos, Tecnología, Redes). Hoy el set de lanzamiento son 17 servicios; el resto del catálogo (41) se activa por demanda.</div>
   </section>
 
   <section class="panel" id="n8n">
-    <div class="note" style="border-color:#a9d3b4;background:#eef7f0;margin-top:0"><b><svg class="ic-svg ic-live"><use href="#ic-check"/></svg> n8n EN VIVO:</b> corriendo en <b>https://n8n.bloomlichtatelier.com</b> (self-host Hetzner + Caddy/Let's Encrypt, HTTPS). Sin topes de workflows/ejecuciones. <b>25 workflows</b> importados.<br><b><svg class="ic-svg" style="color:var(--amber)"><use href="#ic-alert"/></svg> Credenciales:</b> credenciales reconectadas. Actualizados con el ruteo nuevo (<b>00 Investigación / Entregables</b>) + Formateador (Word+PDF): <b>Estudio V2 · Competencia V6 · Cierre V4 · Diagnóstico V1</b>. Supabase activa (Healthy).</div>
+    <div class="note" style="border-color:#a9d3b4;background:#eef7f0;margin-top:0"><b><svg class="ic-svg ic-live"><use href="#ic-check"/></svg> n8n EN VIVO:</b> corriendo en <b>https://n8n.bloomlichtatelier.com</b> (self-host Hetzner + Caddy/Let's Encrypt, HTTPS). Sin topes de workflows/ejecuciones. <b>25 workflows</b> importados.<br><b><svg class="ic-svg" style="color:var(--amber)"><use href="#ic-alert"/></svg> Credenciales:</b> credenciales reconectadas. Sistema de intake por <b>Router (12 líneas)</b> + instrumentos on-brand: <b>Diagnóstico V2 (1.1×6 Lentes) · Estudio V3 · Competencia V7 · Naming V1 · Comercial V1 · Web V1 · Extraer+Inferir URL</b>. Formateador Word+PDF. Pendiente: importar/activar los flujos nuevos. Supabase activa (Healthy).</div>
     <div class="lnk" style="margin:10px 0">
       <a href="https://n8n.bloomlichtatelier.com" target="_blank">Abrir n8n <span>→</span></a>
       <a href="https://n8n.bloomlichtatelier.com/home/workflows" target="_blank">Ver los 25 workflows <span>→</span></a>
