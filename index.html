@@ -124,7 +124,7 @@
   <header>
     <div class="wm"><div class="wm-name">Bloomlicht</div><div class="wm-at"><i></i><span>ATELIER</span><i></i></div></div>
     <div class="tagline">Luz, forma y propósito.</div>
-    <div class="sub">Panel · 12 ago 2026 · hub v25 · Empresa v9 · (interno: "la IA produce; una persona cura y decide")</div>
+    <div class="sub">Panel · 26 ago 2026 · hub v25 · Empresa v9 · (interno: "la IA produce; una persona cura y decide")</div>
   </header>
 
   <div class="tabs">
@@ -139,6 +139,7 @@
     <div class="tab" data-t="n8n">Rescate n8n</div>
     <div class="tab" data-t="flujo">Flujo</div>
     <div class="tab" data-t="bitacora">Bitácora</div>
+    <div class="tab" data-t="pendientes">Pendientes</div>
   </div>
 
   <section class="panel on" id="resumen">
@@ -222,8 +223,9 @@
       <a href="https://validacion.bloomlichtatelier.com/lanzador.html" target="_blank"><b>Consola manual</b> — dispara cualquier instrumento a mano (proyecto + herramienta + notas) <span>→</span></a>
       <a href="generador.html" target="_blank"><b>Generador de links por proyecto (manual)</b> — escribe el proyecto y copia el link <span>→</span></a>
       <div class="note" style="margin:2px 0 6px">Herramienta manual: pon el nombre del proyecto → <b>Generar</b> → <b>Copiar</b> el link con token → envíalo al cliente. No necesita n8n.</div>
-      <div class="cat"><svg class="ic-svg ic-live"><use href="#ic-check"/></svg>Landings de cliente</div>
-      <a href="https://claudiaavalos.bloomlichtatelier.com" target="_blank"><b>Claudia Pérez Ávalos</b> — landing profesional (perfil, trayectoria y contacto) <span>→</span></a>
+      <div class="cat"><svg class="ic-svg ic-live"><use href="#ic-check"/></svg>Portales y consolas de cliente</div>
+      <a href="https://claudiaavalos.bloomlichtatelier.com" target="_blank"><b>Claudia Pérez Ávalos</b> — landing profesional (perfil, trayectoria, medios, redes) <span>→</span></a>
+      <a href="https://lanacional.bloomlichtatelier.com" target="_blank"><b>Consola La Nacional (CRM de Aldo)</b> — CRM+pipeline, inventario, bot, campañas, facturación CFDI, roles <span>→</span></a>
       <div class="cat"><svg class="ic-svg"><use href="#ic-folder"/></svg>Carpetas de Drive</div>
       <a href="https://drive.google.com/drive/folders/1lJZfULE6xBVF6uw1A4mZ_vdWX5GZ_b-8" target="_blank">Vault Compartido (memoria David + Paola) <span>→</span></a>
       <a href="https://drive.google.com/drive/folders/1Y5D8V8_e17lxv85jpnyykWZNSOQOD1we" target="_blank">Briefs Bloomlicht <span>→</span></a>
@@ -493,6 +495,32 @@ flowchart TD
     <div class="note" style="margin-top:0">Registro vivo de avances de <b>David</b> y <b>Paola</b>. Cuando esté conectada la <b>Google Sheet compartida</b>, cada avance que escriban aparece aquí al recargar (se actualiza solo). Mientras, muestra la última foto publicada.</div>
     <div id="bita-meta" style="font-size:11.5px;color:#8a8069;margin:6px 2px 12px"></div>
     <div id="bita-live" class="lnk"><div class="note">Cargando avances…</div></div>
+  </section>
+
+  <section class="panel" id="pendientes">
+    <style>#pendientes .lnk a{display:block;text-align:left;line-height:1.5}#pendientes .lnk a b{font-weight:700}</style>
+    <div class="note" style="margin-top:0">Lista maestra que Claude mantiene y recuerda hasta cerrar cada punto. Reconciliada con el estado real del panel (26 ago 2026). Fuente: <b>Vault › PENDIENTES_MAESTRO.md</b>.</div>
+    <div class="lnk">
+      <div class="cat"><svg class="ic-svg ic-live"><use href="#ic-check"/></svg>Ya hecho (para que quede claro qué NO falta)</div>
+      <a>Consola La Nacional (CRM de Aldo) en vivo · Herramientas de intake activas (naming, empaque, evento, podcast, diagnóstico, estudio, competencia) · Wordmark/activos visuales · Pipeline de análisis (guarda en 00 Investigación md+Word+PDF) · Claudia Ávalos (sitio + responsive + medios + redes + logos ordenados).</a>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-spark"/></svg>Prioridad comercial (lo que abre ingresos)</div>
+      <a>🔴 Ponerle <b>precio</b> a los servicios y cargarlos al cotizador.</a>
+      <a>🔴 Redactar el <b>contrato maestro</b> de servicio.</a>
+      <a>🔴 Cerrar el <b>primer cliente pagado</b>.</a>
+      <a>🟠 Levantar el <b>Formateador (Word+PDF)</b> y prueba end-to-end del intake.</a>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-flow"/></svg>Infraestructura / memoria (con David)</div>
+      <a>🟠 Nextcloud <b>Fase 2</b> (sincronía dos vías Drive↔hub) — activar contigo.</a>
+      <a>🔴 <b>Panel en vivo desde el hub</b> (bitácora + tareas en tiempo real) o publicar el Google Sheet.</a>
+      <a>🔴 <b>La Nacional</b>: conectar la consola a un backend real (hoy datos de ejemplo) + facturación CFDI real.</a>
+      <a>🔴 Repuntar webhooks a Nextcloud (hoy escriben en Drive).</a>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-folder"/></svg>Marcas y negocios en paralelo (nuevo)</div>
+      <a>🔴 <b>Inventario de marcas</b> (nombre · dominio · ¿correo? · ¿web? · ¿CRM? · prioridad) — falta que lo dictes.</a>
+      <a>🔴 Correo por marca (DNS: MX/SPF/DKIM) · Portal por marca (plantilla tipo Claudia) · CRM/estructura por negocio.</a>
+      <a>🔴 Modelo <b>multi-agente</b>: un agente por marca con instrucciones/enlaces de Claude, coordinados por Claude (ver COORDINACION_MULTIAGENTE.md).</a>
+      <div class="cat"><svg class="ic-svg"><use href="#ic-palette"/></svg>Gobernanza / equipo</div>
+      <a>🔴 Propagar ESTRUCTURA al hub 08_gobernanza · archivar Caso 0 _to_delete · prompts de arranque con leer-antes-de-escribir · tematizar Nextcloud con el oro/wordmark (ya disponible).</a>
+      <a>🔴 <b>Paola</b>: pegar PROMPT v3, contraseña temporal, subir versiones, conectarse al hub · merge de contenido David ⇄ Paola.</a>
+    </div>
   </section>
 
   <footer>Se regenera desde el Vault Compartido (Bloomlicht › Bloomlicht — Vault Compartido) · publican David o Paola</footer>
