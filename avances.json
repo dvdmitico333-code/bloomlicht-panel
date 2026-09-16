@@ -9,7 +9,7 @@
     {
       "fecha": "2026-09-16",
       "quien": "C",
-      "texto": "**Panel:** agregado el cliente **Welfare Veterinaria** (sitio + admin) como tarjeta y gauge, con dominio propio ([sitio](https://welfareveterinaria.com/) · [admin](https://welfareveterinaria.com/admin/)). Hecho: página y panel de administración en vivo. Falta: conectar datos/backend reales y activar correos (runbook Zoho listo)."
+      "texto": "**Panel:** agregado el cliente **Welfare Veterinaria** (sitio + admin) como tarjeta y gauge, con dominio propio ([sitio](https://welfareveterinaria.com/) · [admin](https://welfareveterinaria.com/admin/)). Hecho: página y admin en vivo con **backend funcionando** (subir una foto en el admin la publica en la página). Falta: activar correos (runbook Zoho listo) y terminar el contenido definitivo."
     },
     {
       "fecha": "2026-08-12",
