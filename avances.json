@@ -2,6 +2,11 @@
   "publicado": "2026-08-12 10:00",
   "items": [
     {
+      "fecha": "2026-09-16",
+      "quien": "C",
+      "texto": "**Panel:** agregado el cliente **Welfare Veterinaria** (sitio + admin) como tarjeta y gauge, con dominio propio ([sitio](https://welfareveterinaria.com/) · [admin](https://welfareveterinaria.com/admin/)). Hecho: página y panel de administración en vivo. Falta: conectar datos/backend reales y activar correos (runbook Zoho listo)."
+    },
+    {
       "fecha": "2026-08-12",
       "quien": "C",
       "texto": "**Bitácora automática:** el panel ahora muestra TODO junto — la Google Sheet (David/Paola) + este registro automático de Claude. Y la publicación del panel quedó **automatizada** (Claude publica desde el equipo de David, sin subidas manuales)."
