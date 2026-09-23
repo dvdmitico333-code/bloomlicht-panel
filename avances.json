@@ -2,6 +2,11 @@
   "publicado": "2026-08-12 10:00",
   "items": [
     {
+      "fecha": "2026-09-23",
+      "quien": "C",
+      "texto": "**Vault reordenado (auditoría de Paola, 22 sep) + seguridad.** Todo lo vivo quedó en `00_ACTUAL/` (7 subcarpetas por tema) y una **única lista de pendientes** `00_ACTUAL/PENDIENTES.md` que reemplaza a los 8+ docs viejos (esos pasaron a `_archivo/`, nada se borró). Regla: pendientes nuevos van solo a esa lista. 🔴 **Seguridad:** `BOVEDA_Credenciales_Bloomlicht.md` estaba en texto plano dentro del vault **compartido** — se saca a la carpeta privada `Documentos\\Credenciales` (que ya tiene las llaves) y se rotan las llaves expuestas (Anthropic + n8n). Pendientes técnicos de David verificados contra el hub v28 (carriles F Motor / G Seguridad / H Otros negocios)."
+    },
+    {
       "fecha": "2026-09-16",
       "quien": "C",
       "texto": "**Logo Kit / Vectorizador — herramienta construida y en vivo.** Motor vectorizador asegurado ([logokit](https://validacion.bloomlichtatelier.com/logokit)) + UI (subir→procesar→resultados→descargar), **modo pesado** bajo demanda (SAM + OCR + super-resolución Real-ESRGAN) y flujo **híbrido IA→vector** validado (~99% de fidelidad). Genera el kit completo (12 carpetas, ~60 formatos). Panel actualizado: la herramienta pasa de “por construir” a **en vivo** en Resumen/Intake/Construido/Flujo. Falta: biblioteca de activos reutilizables (DB + buscador), des-pixelado automático y “modo generar”."
