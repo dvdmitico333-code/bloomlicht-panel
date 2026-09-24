@@ -141,6 +141,7 @@
     <div class="tab" data-t="flujo">Flujo</div>
     <div class="tab" data-t="bitacora">Bitácora</div>
     <div class="tab" data-t="pendientes">Pendientes</div>
+    <div class="tab" data-t="mapa">Mapa del Vault</div>
   </div>
 
   <section class="panel on" id="resumen">
@@ -605,6 +606,20 @@ flowchart TD
     </div>
   </section>
 
+  <section class="panel" id="mapa">
+    <h2>Mapa del Vault</h2>
+    <p class="note" style="margin:4px 0 10px">Vista tipo Obsidian del Vault Compartido: cada punto es una nota, cada línea un vínculo <code>[[...]]</code>. Arrastra, haz zoom con la rueda y da clic en una nota para ver con qué se conecta. Es el mismo mapa que leen las IAs (<code>00_ACTUAL/00_MAPA_IA.md</code>) para gastar menos tokens. Solo nombres de notas — nunca contenido ni credenciales.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+      <input id="vm-q" placeholder="Buscar nota…" style="flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit">
+      <span id="vm-meta" style="font-size:12px;opacity:.7"></span>
+    </div>
+    <div id="vm-legend" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;font-size:11.5px"></div>
+    <div style="position:relative;border:1px solid var(--line,#e4dfd6);border-radius:14px;overflow:hidden;background:#1d1c19">
+      <svg id="vm-svg" style="width:100%;height:560px;display:block"></svg>
+      <div id="vm-info" style="position:absolute;top:10px;right:10px;max-width:280px;background:rgba(245,244,239,.97);color:#1a1a1a;border-radius:10px;padding:10px 12px;font-size:12.5px;display:none;box-shadow:0 4px 16px rgba(0,0,0,.25)"></div>
+    </div>
+  </section>
+
   <footer>Se regenera desde el Vault Compartido (Bloomlicht › Bloomlicht — Vault Compartido) · publican David o Paola</footer>
 </div>
 <script>
@@ -612,6 +627,51 @@ flowchart TD
   function bars(p){p.querySelectorAll('.bar>i').forEach(b=>{b.style.width='0';setTimeout(()=>b.style.width=b.dataset.w,60)})}
   tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('on'));t.classList.add('on');panels.forEach(p=>p.classList.remove('on'));const el=document.getElementById(t.dataset.t);el.classList.add('on');bars(el);renderMermaid(el);}));
   bars(document.getElementById('resumen'));
+  // ===== Mapa del Vault (grafo tipo Obsidian) =====
+  (function(){
+    let done=false;
+    const tabEl=document.querySelector('.tab[data-t="mapa"]');
+    tabEl&&tabEl.addEventListener('click',()=>{ if(done) return; done=true;
+      const ld=u=>new Promise((r,j)=>{const x=document.createElement('script');x.src=u;x.onload=r;x.onerror=j;document.head.appendChild(x)});
+      (window.d3?Promise.resolve():ld('https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js'))
+      .then(()=>fetch('vault_map.json?cb='+Date.now())).then(r=>r.json()).then(draw)
+      .catch(e=>{document.getElementById('vm-meta').textContent='No se pudo cargar el mapa: '+e});
+    });
+    function draw(data){
+      const svg=d3.select('#vm-svg'), W=svg.node().clientWidth, H=560;
+      document.getElementById('vm-meta').textContent=data.nodes.length+' notas · '+data.links.length+' vínculos · actualizado '+data.generado;
+      const groups=[...new Set(data.nodes.map(n=>n.g))].sort();
+      const pal=['#C6A87B','#4C7A34','#7fb3c8','#d98c6a','#b48cc8','#e0c35a','#8fbf8a','#c86a7a','#6a8fc8','#aaa38f','#5fb8a8','#e3a1c4'];
+      const col=g=>pal[groups.indexOf(g)%pal.length];
+      document.getElementById('vm-legend').innerHTML=groups.map(g=>'<span style="display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line,#e4dfd6);border-radius:999px;padding:3px 9px"><i style="width:9px;height:9px;border-radius:50%;background:'+col(g)+'"></i>'+g.replace(/^\d+_/,'')+'</span>').join('');
+      const deg={}; data.links.forEach(l=>{deg[l.s]=(deg[l.s]||0)+1;deg[l.t]=(deg[l.t]||0)+1});
+      const links=data.links.map(l=>({source:l.s,target:l.t}));
+      const nodes=data.nodes.map(n=>Object.assign({},n));
+      const g=svg.append('g');
+      svg.call(d3.zoom().scaleExtent([.2,5]).on('zoom',e=>g.attr('transform',e.transform)));
+      const sim=d3.forceSimulation(nodes).force('link',d3.forceLink(links).id(d=>d.id).distance(55))
+        .force('charge',d3.forceManyBody().strength(-110)).force('center',d3.forceCenter(W/2,H/2)).force('col',d3.forceCollide(12));
+      const L=g.append('g').attr('stroke','#6d675c').attr('stroke-opacity',.45).selectAll('line').data(links).join('line');
+      const N=g.append('g').selectAll('g').data(nodes).join('g').style('cursor','pointer')
+        .call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y}).on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null}));
+      N.append('circle').attr('r',d=>4+Math.min(10,Math.sqrt(deg[d.id]||0)*2)).attr('fill',d=>col(d.g)).attr('stroke','#1d1c19').attr('stroke-width',1.2);
+      const T=N.append('text').text(d=>d.id).attr('x',9).attr('y',3).attr('fill','#e8e3d6').attr('font-size',9.5).style('pointer-events','none').attr('opacity',d=>(deg[d.id]||0)>=4?1:0);
+      const info=document.getElementById('vm-info');
+      const nb=id=>new Set(links.filter(l=>l.source.id===id||l.target.id===id).flatMap(l=>[l.source.id,l.target.id]));
+      function focus(d){ const s=nb(d.id); s.add(d.id);
+        N.attr('opacity',n=>s.has(n.id)?1:.12); T.attr('opacity',n=>s.has(n.id)?1:0);
+        L.attr('stroke-opacity',l=>(l.source.id===d.id||l.target.id===d.id)?.9:.05);
+        const esc=x=>String(x).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+        info.style.display='block';
+        info.innerHTML='<b style="font-size:13.5px">'+esc(d.id)+'</b><div style="opacity:.7;margin:3px 0 6px">'+esc(d.p)+' · '+d.m+'</div><b>Conecta con ('+(s.size-1)+'):</b><div style="max-height:180px;overflow:auto;margin-top:3px">'+[...s].filter(x=>x!==d.id).map(esc).join('<br>')+'</div><div style="margin-top:6px;opacity:.6;font-size:11px">Clic en el fondo para limpiar</div>'; }
+      function clear(){N.attr('opacity',1);T.attr('opacity',d=>(deg[d.id]||0)>=4?1:0);L.attr('stroke-opacity',.45);info.style.display='none'}
+      N.on('click',(e,d)=>{e.stopPropagation();focus(d)}); svg.on('click',clear);
+      sim.on('tick',()=>{L.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);N.attr('transform',d=>'translate('+d.x+','+d.y+')')});
+      document.getElementById('vm-q').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase(); if(!q) return clear();
+        const hit=nodes.find(n=>n.id.toLowerCase().includes(q)); if(hit) focus(hit);});
+    }
+  })();
+
   // ===== Paso 1: enviar cuestionario =====
   (function(){
     const LINK="https://validacion.bloomlichtatelier.com/formulario.html";
