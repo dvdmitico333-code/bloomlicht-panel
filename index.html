@@ -141,6 +141,7 @@
     <div class="tab" data-t="flujo">Flujo</div>
     <div class="tab" data-t="bitacora">Bitácora</div>
     <div class="tab" data-t="pendientes">Pendientes</div>
+    <div class="tab" data-t="puente">● PUENTE en vivo</div>
     <div class="tab" data-t="mapa">Mapa del Vault</div>
   </div>
 
@@ -606,6 +607,31 @@ flowchart TD
     </div>
   </section>
 
+  <section class="panel" id="puente">
+    <h2>PUENTE en vivo</h2>
+    <p class="note" style="margin:4px 0 10px">Tablero compartido de <b>David, Paola y las IAs</b>. Lo que escriben aparece al instante. Para que responda una IA: menciona <code>@claude</code> o usa tipo <b>tarea</b> / <b>plan</b> (plan = modelo potente; lo demás = modelo económico). Nunca pongas contraseñas aquí.</p>
+    <div id="pt-setup" class="card" style="display:none"></div>
+    <div id="pt-login" class="card" style="display:none;max-width:420px">
+      <b>Entrar al tablero</b><p class="note" style="margin:6px 0">Te llega un enlace a tu correo (solo David y Paola).</p>
+      <div style="display:flex;gap:6px"><input id="pt-mail" type="email" placeholder="tu correo" style="flex:1;padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit"><button id="pt-send" class="btn" style="padding:9px 14px;border-radius:9px;border:0;background:#1a1a1a;color:#f5f4ef;cursor:pointer">Enviar enlace</button></div>
+      <div id="pt-lmsg" class="note" style="margin-top:6px"></div>
+    </div>
+    <div id="pt-app" style="display:none">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:12px">
+        <span id="pt-who" style="opacity:.75"></span><span style="flex:1"></span>
+        <select id="pt-f" style="padding:6px 8px;border-radius:8px;border:1px solid var(--line,#e4dfd6)"><option value="">Todo</option><option value="pend">Pendientes de atender</option><option value="conf">Requiere confirmación</option></select>
+        <button id="pt-out" style="padding:6px 10px;border-radius:8px;border:1px solid var(--line,#e4dfd6);background:transparent;cursor:pointer">Salir</button>
+      </div>
+      <div id="pt-list" style="height:460px;overflow:auto;border:1px solid var(--line,#e4dfd6);border-radius:14px;padding:12px;background:var(--paper,#fbfaf7)"></div>
+      <div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:6px;margin-top:8px;align-items:end">
+        <select id="pt-tipo" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option>nota</option><option>correccion</option><option>comentario</option><option>indicacion</option><option>tarea</option><option>plan</option></select>
+        <select id="pt-para" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option value="todos">para todos</option><option value="david">para David</option><option value="paola">para Paola</option><option value="ia:claude">para Claude</option></select>
+        <textarea id="pt-txt" rows="2" placeholder="Escribe… (Ctrl+Enter para enviar)" style="padding:9px 12px;border-radius:9px;border:1px solid var(--line,#e4dfd6);font:inherit;resize:vertical"></textarea>
+        <button id="pt-go" style="padding:10px 16px;border-radius:9px;border:0;background:#C6A87B;color:#1a1a1a;font-weight:700;cursor:pointer">Enviar</button>
+      </div>
+    </div>
+  </section>
+
   <section class="panel" id="mapa">
     <h2>Mapa del Vault</h2>
     <p class="note" style="margin:4px 0 10px">Vista tipo Obsidian del Vault Compartido: cada punto es una nota, cada línea un vínculo <code>[[...]]</code>. Arrastra, haz zoom con la rueda y da clic en una nota para ver con qué se conecta. Es el mismo mapa que leen las IAs (<code>00_ACTUAL/00_MAPA_IA.md</code>) para gastar menos tokens. Solo nombres de notas — nunca contenido ni credenciales.</p>
@@ -627,6 +653,61 @@ flowchart TD
   function bars(p){p.querySelectorAll('.bar>i').forEach(b=>{b.style.width='0';setTimeout(()=>b.style.width=b.dataset.w,60)})}
   tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('on'));t.classList.add('on');panels.forEach(p=>p.classList.remove('on'));const el=document.getElementById(t.dataset.t);el.classList.add('on');bars(el);renderMermaid(el);}));
   bars(document.getElementById('resumen'));
+
+  // ===== PUENTE en vivo (Supabase realtime) =====
+  (function(){
+    let started=false, sb=null, me=null, rows=[];
+    const $=id=>document.getElementById(id);
+    const esc=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const lnk=t=>esc(t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>');
+    const COL={david:'#4C7A34',paola:'#7a1f2b'}; const est={nuevo:'#999',visto:'#7fb3c8',en_curso:'#e0a13a',hecho:'#4C7A34',requiere_confirmacion:'#c0392b'};
+    const tabEl=document.querySelector('.tab[data-t="puente"]');
+    tabEl&&tabEl.addEventListener('click',start);
+    function ld(u){return new Promise((r,j)=>{const x=document.createElement('script');x.src=u;x.onload=r;x.onerror=j;document.head.appendChild(x)})}
+    async function start(){ if(started) return; started=true;
+      try{ await ld('puente_config.js?cb='+Date.now()); }catch(e){}
+      const C=window.PUENTE||{};
+      if(!C.url||!C.anonKey){ const s=$('pt-setup'); s.style.display='block'; s.innerHTML='<b>Falta conectar Supabase.</b> <span class="note">Llena <code>puente_config.js</code> con la URL del proyecto y la llave <i>anon/publishable</i> (ver <code>Downloads/PUENTE_setup/LEEME.md</code>).</span>'; return; }
+      await ld('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+      sb=window.supabase.createClient(C.url,C.anonKey);
+      sb.auth.onAuthStateChange((_e,ses)=>{ if(ses) enter(ses); });
+      const {data:{session}}=await sb.auth.getSession(); session?enter(session):showLogin();
+    }
+    function showLogin(){ $('pt-login').style.display='block'; $('pt-app').style.display='none';
+      $('pt-send').onclick=async()=>{ const email=$('pt-mail').value.trim(); if(!email) return;
+        const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname+'#puente',shouldCreateUser:true}});
+        $('pt-lmsg').textContent=error?('Error: '+error.message):'Listo: revisa tu correo y abre el enlace.'; }; }
+    async function enter(ses){ if(me) return;
+      const {data:m}=await sb.from('puente_miembros').select('autor').eq('email',ses.user.email).maybeSingle();
+      if(!m){ $('pt-login').style.display='block'; $('pt-lmsg').textContent='Este correo no está autorizado en el tablero.'; return; }
+      me=m.autor; $('pt-login').style.display='none'; $('pt-app').style.display='block';
+      $('pt-who').textContent='Conectado como '+me+' · en vivo';
+      $('pt-out').onclick=async()=>{await sb.auth.signOut();location.reload()};
+      $('pt-f').onchange=render;
+      const {data}=await sb.from('puente_mensajes').select('*').order('id',{ascending:false}).limit(150);
+      rows=(data||[]).reverse(); render(true);
+      sb.channel('puente').on('postgres_changes',{event:'*',schema:'public',table:'puente_mensajes'},p=>{
+        const r=p.new; if(!r||!r.id) return; const i=rows.findIndex(x=>x.id===r.id);
+        if(i>=0) rows[i]=r; else rows.push(r); render(true);
+      }).subscribe();
+      const send=async()=>{ const t=$('pt-txt').value.trim(); if(!t) return; $('pt-go').disabled=true;
+        const {error}=await sb.from('puente_mensajes').insert({autor:me,para:$('pt-para').value,tipo:$('pt-tipo').value,texto:t});
+        $('pt-go').disabled=false; if(error) alert('No se envió: '+error.message); else $('pt-txt').value=''; };
+      $('pt-go').onclick=send; $('pt-txt').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)) send()});
+    }
+    window.__ptEstado=async(id,e)=>{ const {error}=await sb.from('puente_mensajes').update({estado:e}).eq('id',id); if(error) alert(error.message); };
+    function render(scroll){ const f=$('pt-f').value, L=$('pt-list');
+      const vis=rows.filter(r=>!f||(f==='pend'&&['nuevo','en_curso'].includes(r.estado))||(f==='conf'&&r.estado==='requiere_confirmacion'));
+      L.innerHTML=vis.map(r=>{ const ia=String(r.autor).startsWith('ia:'); const c=ia?'#C6A87B':(COL[r.autor]||'#555');
+        const hora=new Date(r.creado).toLocaleString('es-MX',{dateStyle:'short',timeStyle:'short'});
+        return '<div style="margin:0 0 10px;padding:9px 11px;border-radius:11px;border-left:4px solid '+c+';background:'+(ia?'rgba(198,168,123,.10)':'#fff')+'">'+
+          '<div style="font-size:11.5px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><b style="color:'+c+'">'+esc(r.autor)+'</b><span style="opacity:.6">→ '+esc(r.para)+' · '+esc(r.tipo)+' · '+hora+(r.modelo?' · '+esc(r.modelo):'')+'</span><span style="flex:1"></span>'+
+          '<span style="font-size:10.5px;padding:1px 7px;border-radius:999px;color:#fff;background:'+(est[r.estado]||'#999')+'">'+esc(r.estado)+'</span>'+
+          (r.estado!=='hecho'?'<a href="javascript:void 0" onclick="__ptEstado('+r.id+',\'hecho\')" style="font-size:10.5px">marcar hecho</a>':'')+'</div>'+
+          '<div style="margin-top:4px;font-size:13.5px;line-height:1.5">'+lnk(r.texto)+'</div></div>'; }).join('')||'<div class="note">Sin mensajes.</div>';
+      if(scroll) L.scrollTop=L.scrollHeight; }
+    if(location.hash==='#puente'){ document.querySelector('.tab[data-t="puente"]')?.click(); }
+  })();
   // ===== Mapa del Vault (grafo tipo Obsidian) =====
   (function(){
     let done=false;
