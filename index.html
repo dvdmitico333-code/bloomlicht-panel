@@ -628,11 +628,12 @@ flowchart TD
       </div>
       <div id="pt-list" style="height:460px;overflow:auto;border:1px solid var(--line,#e4dfd6);border-radius:14px;padding:12px;background:var(--paper,#fbfaf7)"></div>
       <div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:6px;margin-top:8px;align-items:end">
-        <select id="pt-tipo" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option>nota</option><option>correccion</option><option>comentario</option><option>indicacion</option><option>tarea</option><option>plan</option></select>
-        <select id="pt-para" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option value="todos">para todos</option><option value="david">para David</option><option value="paola">para Paola</option><option value="ia:claude-david">para Claude de David</option><option value="ia:claude-paola">para Claude de Paola</option><option value="ia:claudes">para ambos Claude</option></select>
+        <select id="pt-tipo" title="Automático: se deduce de lo que escribes" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option value="auto">tipo: automático</option><option>nota</option><option>correccion</option><option>comentario</option><option>indicacion</option><option>tarea</option><option>plan</option></select>
+        <select id="pt-para" title="Automático: se deduce de lo que escribes" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option value="auto">para: automático</option><option value="todos">para todos</option><option value="david">para David</option><option value="paola">para Paola</option><option value="ia:claude-david">para Claude de David</option><option value="ia:claude-paola">para Claude de Paola</option><option value="ia:claudes">para ambos Claude</option></select>
         <textarea id="pt-txt" rows="2" placeholder="Escribe… (Ctrl+Enter para enviar)" style="padding:9px 12px;border-radius:9px;border:1px solid var(--line,#e4dfd6);font:inherit;resize:vertical"></textarea>
         <button id="pt-go" style="padding:10px 16px;border-radius:9px;border:0;background:#C6A87B;color:#1a1a1a;font-weight:700;cursor:pointer">Enviar</button>
       </div>
+      <div id="pt-auto" class="note" style="margin-top:4px;font-size:11.5px;opacity:.75"></div>
     </div>
   </section>
 
@@ -699,9 +700,24 @@ flowchart TD
         const r=p.new; if(!r||!r.id) return; const i=rows.findIndex(x=>x.id===r.id);
         if(i>=0) rows[i]=r; else rows.push(r); render(true);
       }).subscribe();
+      const autoTipo=t=>{ const x=t.toLowerCase();
+        if(/\bplan(ea|ifica|ificar)?\b|estrategia|arquitectura|dise[ñn]a/.test(x)) return 'plan';
+        if(/corrig|correcci|est[aá] mal|error en|cambia[r]? .* por/.test(x)) return 'correccion';
+        if(/^(haz|hacer|crea|revisa|sube|publica|agrega|arregla|pendiente)|\btarea\b|por favor|necesito que/.test(x)) return 'tarea';
+        if(/\bindica|instrucci|de ahora en adelante|regla\b/.test(x)) return 'indicacion';
+        if(/\blisto\b|ya qued|actualiz|termin[eé]|avance/.test(x)) return 'actualizacion';
+        if(/\?$|opino|creo que|comentario/.test(x)) return 'comentario';
+        return 'nota'; };
+      const autoPara=t=>{ const x=t.toLowerCase(); const cd=/@?claude.*david|claude de david|@cd\b/.test(x), cp=/@?claude.*pao|claude de pao|@cp\b/.test(x);
+        if(cd&&cp || /ambos claude|los dos claude|@claudes/.test(x)) return 'ia:claudes';
+        if(cp) return 'ia:claude-paola'; if(cd || /@claude\b/.test(x)) return me==='paola'?'ia:claude-paola':'ia:claude-david';
+        if(/@pao|paola/.test(x) && me!=='paola') return 'paola'; if(/@david|\bdavid\b/.test(x) && me!=='david') return 'david';
+        return 'todos'; };
+      const hint=()=>{ const t=$('pt-txt').value; const h=$('pt-auto'); if(!h) return; h.textContent=t.trim()? ('→ '+($('pt-tipo').value==='auto'?autoTipo(t):$('pt-tipo').value)+' · para '+($('pt-para').value==='auto'?autoPara(t):$('pt-para').value)) : ''; };
+      $('pt-txt').addEventListener('input',hint); $('pt-tipo').onchange=hint; $('pt-para').onchange=hint;
       const send=async()=>{ const t=$('pt-txt').value.trim(); if(!t) return; $('pt-go').disabled=true;
-        const {error}=await sb.from('puente_mensajes').insert({autor:me,para:$('pt-para').value,tipo:$('pt-tipo').value,texto:t});
-        $('pt-go').disabled=false; if(error) alert('No se envió: '+error.message); else $('pt-txt').value=''; };
+        const {error}=await sb.from('puente_mensajes').insert({autor:me,para:($('pt-para').value==='auto'?autoPara(t):$('pt-para').value),tipo:($('pt-tipo').value==='auto'?autoTipo(t):$('pt-tipo').value),texto:t});
+        $('pt-go').disabled=false; if(error) alert('No se envió: '+(/row-level security/.test(error.message)?'falta aplicar el permiso en Supabase (archivo 05_supabase_sin_contrasena.sql).':error.message)); else { $('pt-txt').value=''; hint(); } };
       $('pt-go').onclick=send; $('pt-txt').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)) send()});
     }
     window.__ptEstado=async(id,e)=>{ const {error}=await sb.from('puente_mensajes').update({estado:e}).eq('id',id); if(error) alert(error.message); };
