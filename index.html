@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+#vm-tools button{padding:5px 9px;border-radius:8px;border:1px solid var(--line,#e4dfd6);background:var(--paper,#fff);cursor:pointer;font:inherit}#vm-tools button.on{background:#1a1a1a;color:#f5f4ef}#vm-tools select{padding:3px;border-radius:6px}#vm-legend span{cursor:pointer;user-select:none}#vm-legend span.off{opacity:.35;text-decoration:line-through}
   :root{--charcoal:#1a1a1a;--ink:#3d3a34;--linen:#f5f4ef;--paper:#fffdf9;--gold:#c6a87b;--gold-d:#a8843f;
     --green:#4a9e63;--amber:#dca63a;--red:#c8524a;--slate:#7c8aa0;--line:#eae1d1;}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -639,6 +640,16 @@ flowchart TD
       <input id="vm-q" placeholder="Buscar nota…" style="flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit">
       <span id="vm-meta" style="font-size:12px;opacity:.7"></span>
     </div>
+    <div id="vm-tools" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;font-size:12px">
+      <button data-vm="fit" title="Encuadrar todo">⤢ Encuadrar</button><button data-vm="in" title="Acercar">＋</button><button data-vm="out" title="Alejar">－</button>
+      <button data-vm="freeze" title="Detener/reanudar el movimiento">❚❚ Congelar</button><button data-vm="labels" title="Mostrar todos los nombres">Aa Nombres</button>
+      <button data-vm="orphans" title="Ocultar notas sin vínculos">◌ Ocultar sueltas</button>
+      <label>Profundidad <select id="vm-depth"><option value="1">1 salto</option><option value="2">2 saltos</option></select></label>
+      <label>Separación <input id="vm-dist" type="range" min="25" max="160" value="55" style="width:90px;vertical-align:middle"></label>
+      <label>Mín. vínculos <input id="vm-min" type="range" min="0" max="8" value="0" style="width:70px;vertical-align:middle"><span id="vm-minv">0</span></label>
+      <button data-vm="all" title="Mostrar todas las carpetas">Todas</button><button data-vm="none" title="Ocultar todas las carpetas">Ninguna</button>
+      <button data-vm="png" title="Descargar imagen">⬇ PNG</button>
+    </div>
     <div id="vm-legend" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;font-size:11.5px"></div>
     <div style="position:relative;border:1px solid var(--line,#e4dfd6);border-radius:14px;overflow:hidden;background:#1d1c19">
       <svg id="vm-svg" style="width:100%;height:560px;display:block"></svg>
@@ -669,15 +680,15 @@ flowchart TD
       const C=window.PUENTE||{};
       if(!C.url||!C.anonKey){ const s=$('pt-setup'); s.style.display='block'; s.innerHTML='<b>Falta conectar Supabase.</b> <span class="note">Llena <code>puente_config.js</code> con la URL del proyecto y la llave <i>anon/publishable</i> (ver <code>Downloads/PUENTE_setup/LEEME.md</code>).</span>'; return; }
       await ld('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
-      sb=window.supabase.createClient(C.url,C.anonKey);
+      sb=window.supabase.createClient(C.url,C.anonKey,{auth:{flowType:'implicit',detectSessionInUrl:true,persistSession:true}});
       sb.auth.onAuthStateChange((_e,ses)=>{ if(ses) enter(ses); });
       const {data:{session}}=await sb.auth.getSession(); session?enter(session):showLogin();
     }
     function showLogin(){ $('pt-login').style.display='block'; $('pt-app').style.display='none';
       $('pt-send').onclick=async()=>{ const email=$('pt-mail').value.trim(); if(!email) return;
-        const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname+'#puente',shouldCreateUser:true}});
+        const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname+'?puente=1',shouldCreateUser:true}});
         $('pt-lmsg').textContent=error?('Error: '+error.message):'Listo: revisa tu correo y abre el enlace.'; }; }
-    async function enter(ses){ if(me) return;
+    async function enter(ses){ if(me) return; try{ if(/access_token=|[?&]puente=1/.test(location.href)) history.replaceState(null,'',location.pathname+'#puente'); }catch(e){}
       const {data:m}=await sb.from('puente_miembros').select('autor').eq('email',ses.user.email).maybeSingle();
       if(!m){ $('pt-login').style.display='block'; $('pt-lmsg').textContent='Este correo no está autorizado en el tablero.'; return; }
       me=m.autor; $('pt-login').style.display='none'; $('pt-app').style.display='block';
@@ -706,7 +717,10 @@ flowchart TD
           (r.estado!=='hecho'?'<a href="javascript:void 0" onclick="__ptEstado('+r.id+',\'hecho\')" style="font-size:10.5px">marcar hecho</a>':'')+'</div>'+
           '<div style="margin-top:4px;font-size:13.5px;line-height:1.5">'+lnk(r.texto)+'</div></div>'; }).join('')||'<div class="note">Sin mensajes.</div>';
       if(scroll) L.scrollTop=L.scrollHeight; }
-    if(location.hash==='#puente'){ document.querySelector('.tab[data-t="puente"]')?.click(); }
+    if(/[?&]puente=1/.test(location.search)||/access_token=|error_description=/.test(location.hash)||location.hash==='#puente'){
+      setTimeout(()=>document.querySelector('.tab[data-t="puente"]')?.click(),50);
+      if(/error_description=/.test(location.hash)){ setTimeout(()=>{ const m=decodeURIComponent((location.hash.match(/error_description=([^&]+)/)||[])[1]||'').replace(/\+/g,' '); const l=document.getElementById('pt-lmsg'); if(l) l.textContent='El enlace ya no sirve ('+m+'). Pide uno nuevo.'; },1500); }
+    }
   })();
   // ===== Mapa del Vault (grafo tipo Obsidian) =====
   (function(){
@@ -724,32 +738,62 @@ flowchart TD
       const groups=[...new Set(data.nodes.map(n=>n.g))].sort();
       const pal=['#C6A87B','#4C7A34','#7fb3c8','#d98c6a','#b48cc8','#e0c35a','#8fbf8a','#c86a7a','#6a8fc8','#aaa38f','#5fb8a8','#e3a1c4'];
       const col=g=>pal[groups.indexOf(g)%pal.length];
-      document.getElementById('vm-legend').innerHTML=groups.map(g=>'<span style="display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line,#e4dfd6);border-radius:999px;padding:3px 9px"><i style="width:9px;height:9px;border-radius:50%;background:'+col(g)+'"></i>'+g.replace(/^\d+_/,'')+'</span>').join('');
+      const hidden=new Set(); let showAll=false, hideOrph=false, frozen=false, minDeg=0, focused=null;
+      const leg=document.getElementById('vm-legend');
+      leg.innerHTML=groups.map(g=>'<span data-g="'+g.replace(/"/g,'')+'" title="Clic: mostrar/ocultar carpeta" style="display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line,#e4dfd6);border-radius:999px;padding:3px 9px"><i style="width:9px;height:9px;border-radius:50%;background:'+col(g)+'"></i>'+g.replace(/^\d+_/,'')+'</span>').join('');
       const deg={}; data.links.forEach(l=>{deg[l.s]=(deg[l.s]||0)+1;deg[l.t]=(deg[l.t]||0)+1});
       const links=data.links.map(l=>({source:l.s,target:l.t}));
       const nodes=data.nodes.map(n=>Object.assign({},n));
       const g=svg.append('g');
-      svg.call(d3.zoom().scaleExtent([.2,5]).on('zoom',e=>g.attr('transform',e.transform)));
-      const sim=d3.forceSimulation(nodes).force('link',d3.forceLink(links).id(d=>d.id).distance(55))
-        .force('charge',d3.forceManyBody().strength(-110)).force('center',d3.forceCenter(W/2,H/2)).force('col',d3.forceCollide(12));
-      const L=g.append('g').attr('stroke','#6d675c').attr('stroke-opacity',.45).selectAll('line').data(links).join('line');
+      const zoom=d3.zoom().scaleExtent([.15,6]).on('zoom',e=>g.attr('transform',e.transform)); svg.call(zoom);
+      const lf=d3.forceLink(links).id(d=>d.id).distance(55);
+      const sim=d3.forceSimulation(nodes).force('link',lf).force('charge',d3.forceManyBody().strength(-110)).force('center',d3.forceCenter(W/2,H/2)).force('col',d3.forceCollide(12));
+      const L=g.append('g').attr('stroke','#6d675c').selectAll('line').data(links).join('line');
       const N=g.append('g').selectAll('g').data(nodes).join('g').style('cursor','pointer')
-        .call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y}).on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=null;d.fy=null}));
+        .call(d3.drag().on('start',(e,d)=>{if(!e.active&&!frozen)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y}).on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y;if(frozen){d.x=e.x;d.y=e.y;tick()}}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);if(!frozen){d.fx=null;d.fy=null}}));
       N.append('circle').attr('r',d=>4+Math.min(10,Math.sqrt(deg[d.id]||0)*2)).attr('fill',d=>col(d.g)).attr('stroke','#1d1c19').attr('stroke-width',1.2);
-      const T=N.append('text').text(d=>d.id).attr('x',9).attr('y',3).attr('fill','#e8e3d6').attr('font-size',9.5).style('pointer-events','none').attr('opacity',d=>(deg[d.id]||0)>=4?1:0);
-      const info=document.getElementById('vm-info');
-      const nb=id=>new Set(links.filter(l=>l.source.id===id||l.target.id===id).flatMap(l=>[l.source.id,l.target.id]));
-      function focus(d){ const s=nb(d.id); s.add(d.id);
-        N.attr('opacity',n=>s.has(n.id)?1:.12); T.attr('opacity',n=>s.has(n.id)?1:0);
-        L.attr('stroke-opacity',l=>(l.source.id===d.id||l.target.id===d.id)?.9:.05);
-        const esc=x=>String(x).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+      N.append('title').text(d=>d.id+'\n'+d.p);
+      const T=N.append('text').text(d=>d.id).attr('x',9).attr('y',3).attr('fill','#e8e3d6').attr('font-size',9.5).style('pointer-events','none');
+      const vis=d=>!hidden.has(d.g)&&(deg[d.id]||0)>=minDeg&&!(hideOrph&&!(deg[d.id]));
+      function nbrs(id,depth){ let s=new Set([id]); for(let k=0;k<depth;k++){ const n=new Set(s); links.forEach(l=>{ if(s.has(l.source.id)) n.add(l.target.id); if(s.has(l.target.id)) n.add(l.source.id); }); s=n; } return s; }
+      function paint(){
+        const s=focused?nbrs(focused.id,+document.getElementById('vm-depth').value):null;
+        N.style('display',d=>vis(d)?null:'none').attr('opacity',d=>!s||s.has(d.id)?1:.1);
+        T.attr('opacity',d=>(s? s.has(d.id) : (showAll||(deg[d.id]||0)>=4))?1:0);
+        L.style('display',l=>vis(l.source)&&vis(l.target)?null:'none').attr('stroke-opacity',l=>!s?.45:(s.has(l.source.id)&&s.has(l.target.id)?.9:.04));
+        leg.querySelectorAll('span').forEach(x=>x.classList.toggle('off',hidden.has(x.dataset.g)));
+      }
+      const info=document.getElementById('vm-info'); const esc=x=>String(x).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+      function focus(d){ focused=d; paint(); const s=nbrs(d.id,+document.getElementById('vm-depth').value);
         info.style.display='block';
-        info.innerHTML='<b style="font-size:13.5px">'+esc(d.id)+'</b><div style="opacity:.7;margin:3px 0 6px">'+esc(d.p)+' · '+d.m+'</div><b>Conecta con ('+(s.size-1)+'):</b><div style="max-height:180px;overflow:auto;margin-top:3px">'+[...s].filter(x=>x!==d.id).map(esc).join('<br>')+'</div><div style="margin-top:6px;opacity:.6;font-size:11px">Clic en el fondo para limpiar</div>'; }
-      function clear(){N.attr('opacity',1);T.attr('opacity',d=>(deg[d.id]||0)>=4?1:0);L.attr('stroke-opacity',.45);info.style.display='none'}
+        info.innerHTML='<b style="font-size:13.5px">'+esc(d.id)+'</b><div style="opacity:.7;margin:3px 0 6px">'+esc(d.p)+' · '+d.m+'</div><b>Conecta con ('+(s.size-1)+'):</b><div style="max-height:180px;overflow:auto;margin-top:3px">'+[...s].filter(x=>x!==d.id).map(x=>'<a href="javascript:void 0" data-go="'+esc(x)+'" style="display:block">'+esc(x)+'</a>').join('')+'</div><div style="margin-top:6px;display:flex;gap:8px;font-size:11px"><a href="javascript:void 0" data-copy="1">Copiar ruta</a><a href="javascript:void 0" data-center="1">Centrar</a><span style="opacity:.6">· clic en el fondo para limpiar</span></div>';
+        info.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>{const n=nodes.find(x=>x.id===a.dataset.go); if(n){focus(n);center(n);}});
+        info.querySelector('[data-copy]').onclick=()=>navigator.clipboard&&navigator.clipboard.writeText(d.p);
+        info.querySelector('[data-center]').onclick=()=>center(d); }
+      function clear(){focused=null;info.style.display='none';paint()}
+      function center(d){ svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity.translate(W/2,H/2).scale(1.6).translate(-d.x,-d.y)); }
+      function fit(){ const v=nodes.filter(vis); if(!v.length) return; const xs=v.map(n=>n.x), ys=v.map(n=>n.y);
+        const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys); const k=Math.min(4,.9/Math.max((x1-x0)/W,(y1-y0)/H,.01));
+        svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity.translate(W/2,H/2).scale(k).translate(-(x0+x1)/2,-(y0+y1)/2)); }
       N.on('click',(e,d)=>{e.stopPropagation();focus(d)}); svg.on('click',clear);
-      sim.on('tick',()=>{L.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);N.attr('transform',d=>'translate('+d.x+','+d.y+')')});
+      function tick(){L.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);N.attr('transform',d=>'translate('+d.x+','+d.y+')')}
+      sim.on('tick',tick); sim.on('end',()=>{}); setTimeout(fit,2500);
+      leg.querySelectorAll('span').forEach(x=>x.onclick=()=>{hidden.has(x.dataset.g)?hidden.delete(x.dataset.g):hidden.add(x.dataset.g);paint()});
+      document.querySelectorAll('#vm-tools [data-vm]').forEach(b=>b.onclick=()=>{ const a=b.dataset.vm;
+        if(a==='fit') fit(); else if(a==='in') svg.transition().call(zoom.scaleBy,1.4); else if(a==='out') svg.transition().call(zoom.scaleBy,1/1.4);
+        else if(a==='freeze'){ frozen=!frozen; b.classList.toggle('on',frozen); b.textContent=frozen?'▶ Reanudar':'❚❚ Congelar'; if(frozen){sim.stop();nodes.forEach(n=>{n.fx=n.x;n.fy=n.y})}else{nodes.forEach(n=>{n.fx=null;n.fy=null});sim.alpha(.3).restart()} }
+        else if(a==='labels'){ showAll=!showAll; b.classList.toggle('on',showAll); paint(); }
+        else if(a==='orphans'){ hideOrph=!hideOrph; b.classList.toggle('on',hideOrph); paint(); }
+        else if(a==='all'){ hidden.clear(); paint(); } else if(a==='none'){ groups.forEach(x=>hidden.add(x)); paint(); }
+        else if(a==='png'){ const c=svg.node().cloneNode(true); c.setAttribute('xmlns','http://www.w3.org/2000/svg'); c.style.background='#1d1c19';
+          const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(c)],{type:'image/svg+xml'})); const im=new Image();
+          im.onload=()=>{const cv=document.createElement('canvas');cv.width=W*2;cv.height=H*2;const x=cv.getContext('2d');x.fillStyle='#1d1c19';x.fillRect(0,0,cv.width,cv.height);x.drawImage(im,0,0,cv.width,cv.height);const a=document.createElement('a');a.download='mapa_vault_bloomlicht.png';a.href=cv.toDataURL('image/png');a.click();URL.revokeObjectURL(url)}; im.src=url; } });
+      document.getElementById('vm-depth').onchange=()=>{ if(focused) focus(focused); };
+      document.getElementById('vm-dist').oninput=e=>{ lf.distance(+e.target.value); if(!frozen) sim.alpha(.5).restart(); };
+      document.getElementById('vm-min').oninput=e=>{ minDeg=+e.target.value; document.getElementById('vm-minv').textContent=minDeg; paint(); };
       document.getElementById('vm-q').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase(); if(!q) return clear();
-        const hit=nodes.find(n=>n.id.toLowerCase().includes(q)); if(hit) focus(hit);});
+        const hit=nodes.find(n=>vis(n)&&n.id.toLowerCase().includes(q)); if(hit){focus(hit);center(hit);}});
+      paint();
     }
   })();
 
