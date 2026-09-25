@@ -684,7 +684,8 @@ flowchart TD
       const C=window.PUENTE||{};
       if(!C.url||!C.anonKey){ const s=$('pt-setup'); s.style.display='block'; s.innerHTML='<b>Falta conectar Supabase.</b> <span class="note">Llena <code>puente_config.js</code> con la URL del proyecto y la llave <i>anon/publishable</i> (ver <code>Downloads/PUENTE_setup/LEEME.md</code>).</span>'; return; }
       await ld('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
-      sb=window.supabase.createClient(C.url,C.anonKey,{auth:{flowType:'implicit',detectSessionInUrl:true,persistSession:true}});
+      try{ Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>localStorage.removeItem(k)); }catch(e){}
+      sb=window.supabase.createClient(C.url,C.anonKey,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false,storageKey:'puente-sin-sesion'}});
       let saved=null; try{ saved=localStorage.getItem('puente_user'); }catch(e){}
       saved?enter(saved):showLogin();
     }
