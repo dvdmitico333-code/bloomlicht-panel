@@ -616,6 +616,10 @@ flowchart TD
       <b>Entrar al tablero</b><p class="note" style="margin:6px 0">Te llega un enlace a tu correo (solo David y Paola).</p>
       <div style="display:flex;gap:6px"><input id="pt-mail" type="email" placeholder="tu correo" style="flex:1;padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit"><button id="pt-send" class="btn" style="padding:9px 14px;border-radius:9px;border:0;background:#1a1a1a;color:#f5f4ef;cursor:pointer">Enviar enlace</button></div>
       <div id="pt-lmsg" class="note" style="margin-top:6px"></div>
+      <details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px">¿Diste clic al correo y no entraste? Pega aquí el enlace</summary>
+        <p class="note" style="margin:6px 0">En el correo, clic derecho sobre el botón/enlace → <b>Copiar dirección del enlace</b> → pégalo aquí. (Usa el correo más reciente; cada enlace sirve una vez y dura 1 hora.)</p>
+        <div style="display:flex;gap:6px"><input id="pt-link" placeholder="https://...supabase.co/auth/v1/verify?token=..." style="flex:1;padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit"><button id="pt-linkgo" style="padding:9px 14px;border-radius:9px;border:0;background:#C6A87B;color:#1a1a1a;font-weight:700;cursor:pointer">Entrar</button></div>
+      </details>
     </div>
     <div id="pt-app" style="display:none">
       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:12px">
@@ -687,7 +691,15 @@ flowchart TD
     function showLogin(){ $('pt-login').style.display='block'; $('pt-app').style.display='none';
       $('pt-send').onclick=async()=>{ const email=$('pt-mail').value.trim(); if(!email) return;
         const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname+'?puente=1',shouldCreateUser:true}});
-        $('pt-lmsg').textContent=error?('Error: '+error.message):'Listo: revisa tu correo y abre el enlace.'; }; }
+        $('pt-lmsg').textContent=error?('Error: '+error.message):'Listo: revisa tu correo y abre el enlace (si no te regresa, usa "Pega aquí el enlace").'; };
+      $('pt-linkgo').onclick=async()=>{ const raw=$('pt-link').value.trim(); if(!raw) return;
+        try{ const u=new URL(raw); const h=new URLSearchParams(u.hash.replace(/^#/,''));
+          if(h.get('access_token')){ const {error}=await sb.auth.setSession({access_token:h.get('access_token'),refresh_token:h.get('refresh_token')}); if(error) throw error; }
+          else { const tk=u.searchParams.get('token_hash')||u.searchParams.get('token'); const ty=u.searchParams.get('type')||'magiclink';
+            if(!tk) throw new Error('ese enlace no trae el código');
+            const {error}=await sb.auth.verifyOtp({token_hash:tk,type:(ty==='signup'?'signup':(ty==='invite'?'invite':'magiclink'))}); if(error) throw error; }
+          const {data:{session}}=await sb.auth.getSession(); if(session) enter(session); else throw new Error('no se creó la sesión');
+        }catch(e){ $('pt-lmsg').textContent='No se pudo: '+(e.message||e)+'. Pide un enlace nuevo y pégalo aquí.'; } }; }
     async function enter(ses){ if(me) return; try{ if(/access_token=|[?&]puente=1/.test(location.href)) history.replaceState(null,'',location.pathname+'#puente'); }catch(e){}
       const {data:m}=await sb.from('puente_miembros').select('autor').eq('email',ses.user.email).maybeSingle();
       if(!m){ $('pt-login').style.display='block'; $('pt-lmsg').textContent='Este correo no está autorizado en el tablero.'; return; }
