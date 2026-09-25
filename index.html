@@ -613,8 +613,15 @@ flowchart TD
     <p class="note" style="margin:4px 0 10px">Tablero compartido de <b>David, Paola y las IAs</b>. Lo que escriben aparece al instante. Todo lo que se escribe aquí se copia (sin gastar tokens) a la bandeja del <b>Claude de David</b> y del <b>Claude de Paola</b>; cada uno lo lee en su sesión y responde aquí mismo. Usa "para" para decir quién debe actuar. Nunca pongas contraseñas.</p>
     <div id="pt-setup" class="card" style="display:none"></div>
     <div id="pt-login" class="card" style="display:none;max-width:420px">
-      <b>Entrar al tablero</b><p class="note" style="margin:6px 0">Te llega un enlace a tu correo (solo David y Paola).</p>
-      <div style="display:flex;gap:6px"><input id="pt-mail" type="email" placeholder="tu correo" style="flex:1;padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit"><button id="pt-send" class="btn" style="padding:9px 14px;border-radius:9px;border:0;background:#1a1a1a;color:#f5f4ef;cursor:pointer">Enviar enlace</button></div>
+      <b>Entrar al tablero</b><p class="note" style="margin:6px 0">Solo David y Paola, con su correo y contraseña.</p>
+      <div style="display:grid;gap:6px">
+        <input id="pt-mail" type="email" autocomplete="username" placeholder="tu correo" style="padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit">
+        <input id="pt-pass" type="password" autocomplete="current-password" placeholder="contraseña" style="padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit">
+        <button id="pt-in" style="padding:10px 14px;border-radius:9px;border:0;background:#1a1a1a;color:#f5f4ef;cursor:pointer;font-weight:700">Entrar</button>
+      </div>
+      <details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;opacity:.75">Otra forma: enlace por correo</summary>
+        <button id="pt-send" style="margin-top:6px;padding:7px 12px;border-radius:9px;border:1px solid var(--line,#e4dfd6);background:transparent;cursor:pointer">Enviarme enlace al correo</button>
+      </details>
       <div id="pt-lmsg" class="note" style="margin-top:6px"></div>
       <details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px">¿Diste clic al correo y no entraste? Pega aquí el enlace</summary>
         <p class="note" style="margin:6px 0">En el correo, clic derecho sobre el botón/enlace → <b>Copiar dirección del enlace</b> → pégalo aquí. (Usa el correo más reciente; cada enlace sirve una vez y dura 1 hora.)</p>
@@ -689,6 +696,12 @@ flowchart TD
       const {data:{session}}=await sb.auth.getSession(); session?enter(session):showLogin();
     }
     function showLogin(){ $('pt-login').style.display='block'; $('pt-app').style.display='none';
+      const doIn=async()=>{ const email=$('pt-mail').value.trim(), password=$('pt-pass').value; if(!email||!password){ $('pt-lmsg').textContent='Escribe correo y contraseña.'; return; }
+        $('pt-in').disabled=true; $('pt-lmsg').textContent='Entrando…';
+        const {data,error}=await sb.auth.signInWithPassword({email,password}); $('pt-in').disabled=false; $('pt-pass').value='';
+        if(error){ $('pt-lmsg').textContent=(/invalid login/i.test(error.message)?'Correo o contraseña incorrectos.':'Error: '+error.message); return; }
+        if(data.session) enter(data.session); };
+      $('pt-in').onclick=doIn; $('pt-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') doIn(); });
       $('pt-send').onclick=async()=>{ const email=$('pt-mail').value.trim(); if(!email) return;
         const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname+'?puente=1',shouldCreateUser:true}});
         $('pt-lmsg').textContent=error?('Error: '+error.message):'Listo: revisa tu correo y abre el enlace (si no te regresa, usa "Pega aquí el enlace").'; };
