@@ -609,7 +609,7 @@ flowchart TD
 
   <section class="panel" id="puente">
     <h2>PUENTE en vivo</h2>
-    <p class="note" style="margin:4px 0 10px">Tablero compartido de <b>David, Paola y las IAs</b>. Lo que escriben aparece al instante. Para que responda una IA: menciona <code>@claude</code> o usa tipo <b>tarea</b> / <b>plan</b> (plan = modelo potente; lo demás = modelo económico). Nunca pongas contraseñas aquí.</p>
+    <p class="note" style="margin:4px 0 10px">Tablero compartido de <b>David, Paola y las IAs</b>. Lo que escriben aparece al instante. Todo lo que se escribe aquí se copia (sin gastar tokens) a la bandeja del <b>Claude de David</b> y del <b>Claude de Paola</b>; cada uno lo lee en su sesión y responde aquí mismo. Usa "para" para decir quién debe actuar. Nunca pongas contraseñas.</p>
     <div id="pt-setup" class="card" style="display:none"></div>
     <div id="pt-login" class="card" style="display:none;max-width:420px">
       <b>Entrar al tablero</b><p class="note" style="margin:6px 0">Te llega un enlace a tu correo (solo David y Paola).</p>
@@ -625,7 +625,7 @@ flowchart TD
       <div id="pt-list" style="height:460px;overflow:auto;border:1px solid var(--line,#e4dfd6);border-radius:14px;padding:12px;background:var(--paper,#fbfaf7)"></div>
       <div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:6px;margin-top:8px;align-items:end">
         <select id="pt-tipo" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option>nota</option><option>correccion</option><option>comentario</option><option>indicacion</option><option>tarea</option><option>plan</option></select>
-        <select id="pt-para" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option value="todos">para todos</option><option value="david">para David</option><option value="paola">para Paola</option><option value="ia:claude">para Claude</option></select>
+        <select id="pt-para" style="padding:9px;border-radius:9px;border:1px solid var(--line,#e4dfd6)"><option value="todos">para todos</option><option value="david">para David</option><option value="paola">para Paola</option><option value="ia:claude-david">para Claude de David</option><option value="ia:claude-paola">para Claude de Paola</option><option value="ia:claudes">para ambos Claude</option></select>
         <textarea id="pt-txt" rows="2" placeholder="Escribe… (Ctrl+Enter para enviar)" style="padding:9px 12px;border-radius:9px;border:1px solid var(--line,#e4dfd6);font:inherit;resize:vertical"></textarea>
         <button id="pt-go" style="padding:10px 16px;border-radius:9px;border:0;background:#C6A87B;color:#1a1a1a;font-weight:700;cursor:pointer">Enviar</button>
       </div>
@@ -660,7 +660,7 @@ flowchart TD
     const $=id=>document.getElementById(id);
     const esc=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
     const lnk=t=>esc(t).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>');
-    const COL={david:'#4C7A34',paola:'#7a1f2b'}; const est={nuevo:'#999',visto:'#7fb3c8',en_curso:'#e0a13a',hecho:'#4C7A34',requiere_confirmacion:'#c0392b'};
+    const COL={david:'#4C7A34',paola:'#7a1f2b','ia:claude-david':'#C6A87B','ia:claude-paola':'#b48cc8'}; const est={nuevo:'#999',visto:'#7fb3c8',en_curso:'#e0a13a',hecho:'#4C7A34',requiere_confirmacion:'#c0392b'};
     const tabEl=document.querySelector('.tab[data-t="puente"]');
     tabEl&&tabEl.addEventListener('click',start);
     function ld(u){return new Promise((r,j)=>{const x=document.createElement('script');x.src=u;x.onload=r;x.onerror=j;document.head.appendChild(x)})}
@@ -698,10 +698,10 @@ flowchart TD
     window.__ptEstado=async(id,e)=>{ const {error}=await sb.from('puente_mensajes').update({estado:e}).eq('id',id); if(error) alert(error.message); };
     function render(scroll){ const f=$('pt-f').value, L=$('pt-list');
       const vis=rows.filter(r=>!f||(f==='pend'&&['nuevo','en_curso'].includes(r.estado))||(f==='conf'&&r.estado==='requiere_confirmacion'));
-      L.innerHTML=vis.map(r=>{ const ia=String(r.autor).startsWith('ia:'); const c=ia?'#C6A87B':(COL[r.autor]||'#555');
+      L.innerHTML=vis.map(r=>{ const ia=String(r.autor).startsWith('ia:'); const c=COL[r.autor]||(ia?'#C6A87B':'#555');
         const hora=new Date(r.creado).toLocaleString('es-MX',{dateStyle:'short',timeStyle:'short'});
         return '<div style="margin:0 0 10px;padding:9px 11px;border-radius:11px;border-left:4px solid '+c+';background:'+(ia?'rgba(198,168,123,.10)':'#fff')+'">'+
-          '<div style="font-size:11.5px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><b style="color:'+c+'">'+esc(r.autor)+'</b><span style="opacity:.6">→ '+esc(r.para)+' · '+esc(r.tipo)+' · '+hora+(r.modelo?' · '+esc(r.modelo):'')+'</span><span style="flex:1"></span>'+
+          '<div style="font-size:11.5px;display:flex;gap:6px;flex-wrap:wrap;align-items:center"><b style="color:'+c+'">'+esc(({'ia:claude-david':'Claude de David','ia:claude-paola':'Claude de Paola'})[r.autor]||r.autor)+'</b><span style="opacity:.6">→ '+esc(r.para)+' · '+esc(r.tipo)+' · '+hora+(r.modelo?' · '+esc(r.modelo):'')+'</span><span style="flex:1"></span>'+
           '<span style="font-size:10.5px;padding:1px 7px;border-radius:999px;color:#fff;background:'+(est[r.estado]||'#999')+'">'+esc(r.estado)+'</span>'+
           (r.estado!=='hecho'?'<a href="javascript:void 0" onclick="__ptEstado('+r.id+',\'hecho\')" style="font-size:10.5px">marcar hecho</a>':'')+'</div>'+
           '<div style="margin-top:4px;font-size:13.5px;line-height:1.5">'+lnk(r.texto)+'</div></div>'; }).join('')||'<div class="note">Sin mensajes.</div>';
