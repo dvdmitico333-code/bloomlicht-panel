@@ -613,26 +613,18 @@ flowchart TD
     <p class="note" style="margin:4px 0 10px">Tablero compartido de <b>David, Paola y las IAs</b>. Lo que escriben aparece al instante. Todo lo que se escribe aquí se copia (sin gastar tokens) a la bandeja del <b>Claude de David</b> y del <b>Claude de Paola</b>; cada uno lo lee en su sesión y responde aquí mismo. Usa "para" para decir quién debe actuar. Nunca pongas contraseñas.</p>
     <div id="pt-setup" class="card" style="display:none"></div>
     <div id="pt-login" class="card" style="display:none;max-width:420px">
-      <b>Entrar al tablero</b><p class="note" style="margin:6px 0">Solo David y Paola, con su correo y contraseña.</p>
-      <div style="display:grid;gap:6px">
-        <input id="pt-mail" type="email" autocomplete="username" placeholder="tu correo" style="padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit">
-        <input id="pt-pass" type="password" autocomplete="current-password" placeholder="contraseña" style="padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit">
-        <button id="pt-in" style="padding:10px 14px;border-radius:9px;border:0;background:#1a1a1a;color:#f5f4ef;cursor:pointer;font-weight:700">Entrar</button>
+      <b>Entrar al tablero</b><p class="note" style="margin:6px 0">¿Quién eres?</p>
+      <div style="display:flex;gap:6px">
+        <select id="pt-user" style="flex:1;padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit"><option value="david">David</option><option value="paola">Paola</option></select>
+        <button id="pt-in" style="padding:10px 16px;border-radius:9px;border:0;background:#1a1a1a;color:#f5f4ef;cursor:pointer;font-weight:700">Entrar</button>
       </div>
-      <details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;opacity:.75">Otra forma: enlace por correo</summary>
-        <button id="pt-send" style="margin-top:6px;padding:7px 12px;border-radius:9px;border:1px solid var(--line,#e4dfd6);background:transparent;cursor:pointer">Enviarme enlace al correo</button>
-      </details>
       <div id="pt-lmsg" class="note" style="margin-top:6px"></div>
-      <details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px">¿Diste clic al correo y no entraste? Pega aquí el enlace</summary>
-        <p class="note" style="margin:6px 0">En el correo, clic derecho sobre el botón/enlace → <b>Copiar dirección del enlace</b> → pégalo aquí. (Usa el correo más reciente; cada enlace sirve una vez y dura 1 hora.)</p>
-        <div style="display:flex;gap:6px"><input id="pt-link" placeholder="https://...supabase.co/auth/v1/verify?token=..." style="flex:1;padding:9px 12px;border:1px solid var(--line,#e4dfd6);border-radius:9px;font:inherit"><button id="pt-linkgo" style="padding:9px 14px;border-radius:9px;border:0;background:#C6A87B;color:#1a1a1a;font-weight:700;cursor:pointer">Entrar</button></div>
-      </details>
     </div>
     <div id="pt-app" style="display:none">
       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:12px">
         <span id="pt-who" style="opacity:.75"></span><span style="flex:1"></span>
         <select id="pt-f" style="padding:6px 8px;border-radius:8px;border:1px solid var(--line,#e4dfd6)"><option value="">Todo</option><option value="pend">Pendientes de atender</option><option value="conf">Requiere confirmación</option></select>
-        <button id="pt-out" style="padding:6px 10px;border-radius:8px;border:1px solid var(--line,#e4dfd6);background:transparent;cursor:pointer">Salir</button>
+        <button id="pt-out" title="Cambiar de usuario" style="padding:6px 10px;border-radius:8px;border:1px solid var(--line,#e4dfd6);background:transparent;cursor:pointer">Cambiar usuario</button>
       </div>
       <div id="pt-list" style="height:460px;overflow:auto;border:1px solid var(--line,#e4dfd6);border-radius:14px;padding:12px;background:var(--paper,#fbfaf7)"></div>
       <div style="display:grid;grid-template-columns:auto auto 1fr auto;gap:6px;margin-top:8px;align-items:end">
@@ -692,33 +684,14 @@ flowchart TD
       if(!C.url||!C.anonKey){ const s=$('pt-setup'); s.style.display='block'; s.innerHTML='<b>Falta conectar Supabase.</b> <span class="note">Llena <code>puente_config.js</code> con la URL del proyecto y la llave <i>anon/publishable</i> (ver <code>Downloads/PUENTE_setup/LEEME.md</code>).</span>'; return; }
       await ld('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
       sb=window.supabase.createClient(C.url,C.anonKey,{auth:{flowType:'implicit',detectSessionInUrl:true,persistSession:true}});
-      sb.auth.onAuthStateChange((_e,ses)=>{ if(ses) enter(ses); });
-      const {data:{session}}=await sb.auth.getSession(); session?enter(session):showLogin();
+      let saved=null; try{ saved=localStorage.getItem('puente_user'); }catch(e){}
+      saved?enter(saved):showLogin();
     }
     function showLogin(){ $('pt-login').style.display='block'; $('pt-app').style.display='none';
-      const doIn=async()=>{ const email=$('pt-mail').value.trim(), password=$('pt-pass').value; if(!email||!password){ $('pt-lmsg').textContent='Escribe correo y contraseña.'; return; }
-        $('pt-in').disabled=true; $('pt-lmsg').textContent='Entrando…';
-        const {data,error}=await sb.auth.signInWithPassword({email,password}); $('pt-in').disabled=false; $('pt-pass').value='';
-        if(error){ $('pt-lmsg').textContent=(/invalid login/i.test(error.message)?'Correo o contraseña incorrectos.':'Error: '+error.message); return; }
-        if(data.session) enter(data.session); };
-      $('pt-in').onclick=doIn; $('pt-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') doIn(); });
-      $('pt-send').onclick=async()=>{ const email=$('pt-mail').value.trim(); if(!email) return;
-        const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname+'?puente=1',shouldCreateUser:true}});
-        $('pt-lmsg').textContent=error?('Error: '+error.message):'Listo: revisa tu correo y abre el enlace (si no te regresa, usa "Pega aquí el enlace").'; };
-      $('pt-linkgo').onclick=async()=>{ const raw=$('pt-link').value.trim(); if(!raw) return;
-        try{ const u=new URL(raw); const h=new URLSearchParams(u.hash.replace(/^#/,''));
-          if(h.get('access_token')){ const {error}=await sb.auth.setSession({access_token:h.get('access_token'),refresh_token:h.get('refresh_token')}); if(error) throw error; }
-          else { const tk=u.searchParams.get('token_hash')||u.searchParams.get('token'); const ty=u.searchParams.get('type')||'magiclink';
-            if(!tk) throw new Error('ese enlace no trae el código');
-            const {error}=await sb.auth.verifyOtp({token_hash:tk,type:(ty==='signup'?'signup':(ty==='invite'?'invite':'magiclink'))}); if(error) throw error; }
-          const {data:{session}}=await sb.auth.getSession(); if(session) enter(session); else throw new Error('no se creó la sesión');
-        }catch(e){ $('pt-lmsg').textContent='No se pudo: '+(e.message||e)+'. Pide un enlace nuevo y pégalo aquí.'; } }; }
-    async function enter(ses){ if(me) return; try{ if(/access_token=|[?&]puente=1/.test(location.href)) history.replaceState(null,'',location.pathname+'#puente'); }catch(e){}
-      const {data:m}=await sb.from('puente_miembros').select('autor').eq('email',ses.user.email).maybeSingle();
-      if(!m){ $('pt-login').style.display='block'; $('pt-lmsg').textContent='Este correo no está autorizado en el tablero.'; return; }
-      me=m.autor; $('pt-login').style.display='none'; $('pt-app').style.display='block';
-      $('pt-who').textContent='Conectado como '+me+' · en vivo';
-      $('pt-out').onclick=async()=>{await sb.auth.signOut();location.reload()};
+      $('pt-in').onclick=()=>{ const u=$('pt-user').value; try{ localStorage.setItem('puente_user',u); }catch(e){} enter(u); }; }
+    async function enter(autor){ if(me) return; me=autor; $('pt-login').style.display='none'; $('pt-app').style.display='block';
+      $('pt-who').textContent='Conectado como '+(me==='david'?'David':'Paola')+' · en vivo';
+      $('pt-out').onclick=()=>{ try{ localStorage.removeItem('puente_user'); }catch(e){} location.reload(); };
       $('pt-f').onchange=render;
       const {data}=await sb.from('puente_mensajes').select('*').order('id',{ascending:false}).limit(150);
       rows=(data||[]).reverse(); render(true);
