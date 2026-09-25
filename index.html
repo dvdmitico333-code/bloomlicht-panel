@@ -712,8 +712,9 @@ flowchart TD
       const autoPara=t=>{ const x=t.toLowerCase(); const cd=/@?claude.*david|claude de david|@cd\b/.test(x), cp=/@?claude.*pao|claude de pao|@cp\b/.test(x);
         if(cd&&cp || /ambos claude|los dos claude|@claudes/.test(x)) return 'ia:claudes';
         if(cp) return 'ia:claude-paola'; if(cd || /@claude\b/.test(x)) return me==='paola'?'ia:claude-paola':'ia:claude-david';
-        if(/@pao|paola/.test(x) && me!=='paola') return 'paola'; if(/@david|\bdavid\b/.test(x) && me!=='david') return 'david';
-        return 'todos'; };
+        if(/^\s*(@pao|para paola\b|paola\s*[:,])/.test(x) && me!=='paola') return 'paola'; if(/^\s*(@david|para david\b|david\s*[:,])/.test(x) && me!=='david') return 'david';
+        if(/^\s*(@todos|a todos\b)/.test(x)) return 'todos';
+        return 'ia:claudes'; };
       const hint=()=>{ const t=$('pt-txt').value; const h=$('pt-auto'); if(!h) return; h.textContent=t.trim()? ('→ '+($('pt-tipo').value==='auto'?autoTipo(t):$('pt-tipo').value)+' · para '+($('pt-para').value==='auto'?autoPara(t):$('pt-para').value)) : ''; };
       $('pt-txt').addEventListener('input',hint); $('pt-tipo').onchange=hint; $('pt-para').onchange=hint;
       const send=async()=>{ const t=$('pt-txt').value.trim(); if(!t) return; $('pt-go').disabled=true;
